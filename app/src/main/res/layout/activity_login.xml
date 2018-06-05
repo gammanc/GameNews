@@ -51,13 +51,20 @@
             android:hint="@string/password"
             />
     </android.support.design.widget.TextInputLayout>
-
-    <Button
+    
+    <br.com.simplepass.loading_button_lib.customViews.CircularProgressButton
+        android:id="@+id/btnLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginEnd="8dp"
-        android:text="@string/login"/>
+        android:background="@drawable/button_shape"
+        android:layout_gravity="center"
+        android:text="@string/login"
+        app:spinning_bar_color="#fff"
+        app:spinning_bar_padding="8dp"
+        app:spinning_bar_width="4dp"/>
 </LinearLayout>
