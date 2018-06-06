@@ -21,6 +21,8 @@ import com.gamma.gamenews.Utils.SharedPreference;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.sql.SQLOutput;
+
 import br.com.simplepass.loading_button_lib.customViews.CircularProgressButton;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -62,6 +64,7 @@ public class LoginActivity extends AppCompatActivity {
                     ).create();
 
                     btnLogin1.startAnimation();
+
                     DataService loginService = Client.getClientInstance(gson).create(DataService.class);
                     Call<String> login = loginService.login(user,pass);
 
@@ -93,6 +96,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<String> call, Throwable t) {
+                            t.printStackTrace();
                             btnLogin1.revertAnimation();
                             Snackbar.make(v,"Login failed. Try again later.",Snackbar.LENGTH_LONG).show();
                         }

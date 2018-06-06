@@ -4,22 +4,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/maincard"
     android:layout_width="match_parent"
-    android:layout_height="250dp"
-    android:layout_margin="4dp"
-    app:cardUseCompatPadding="true"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
     android:background="@color/colorPrimaryDark"
     android:elevation="7dp"
+    android:clickable="true"
     android:orientation="vertical"
     app:cardBackgroundColor="@color/colorPrimaryDark">
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="250dp">
         <ImageView
             android:id="@+id/img_cover"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/bg_drawerb"
+            android:src="@drawable/no_image"
             android:contentDescription="@string/cover_image" />
         <RelativeLayout
             android:layout_width="match_parent"
@@ -30,38 +30,43 @@
                 android:id="@+id/btn_favorite"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:layout_marginRight="8dp"
                 android:layout_marginEnd="8dp"
+                android:layout_alignParentBottom="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:contentDescription="@string/favorites"
                 app:srcCompat="@drawable/ic_favorite_border"
                 android:tint="@color/colorAccent"/>
             <TextView
-                android:id="@+id/lbl_title"
+                android:id="@+id/txt_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:textAppearanceLarge"
-                android:layout_above="@id/lbl_subtitle"
-                android:layout_marginLeft="16dp"
-                android:layout_marginStart="16dp"
-                android:text="G2 vs Fnatic"
-                android:textColor="#fff" />
-            <TextView
-                android:id="@+id/lbl_subtitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:gravity="center_vertical"
-                android:textAppearance="?android:textAppearanceSmall"
-                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam iaculis elit sed lorem consequat tristique."
                 android:layout_marginLeft="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginRight="16dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/no_title_available"
                 android:textColor="#fff" />
         </RelativeLayout>
     </FrameLayout>
+    <TextView
+        android:id="@+id/txt_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_vertical"
+        android:textAppearance="?android:textAppearanceSmall"
+        android:text="@string/no_description_available"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:textColor="#fff" />
 </LinearLayout>

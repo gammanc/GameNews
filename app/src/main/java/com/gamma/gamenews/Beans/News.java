@@ -1,5 +1,9 @@
 package com.gamma.gamenews.Beans;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
@@ -11,13 +15,22 @@ import java.util.Date;
 public class News {
 
     @SerializedName("_id")
-    private int id;
+    private String id;
     private String title;
     private String body;
     private String game;
     private String coverImage;
     private String description;
     private Date created_date;
+
+    @NonNull
+    public String getId() {
+        return id;
+    }
+
+    public void setId(@NonNull String id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;
@@ -66,4 +79,5 @@ public class News {
     public void setCreated_date(Date created_date) {
         this.created_date = created_date;
     }
+
 }

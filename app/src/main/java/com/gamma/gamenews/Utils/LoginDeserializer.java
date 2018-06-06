@@ -1,5 +1,7 @@
 package com.gamma.gamenews.Utils;
 
+import android.util.Log;
+
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -13,6 +15,7 @@ import java.lang.reflect.Type;
  */
 
 public class LoginDeserializer implements JsonDeserializer<String> {
+    private static final String TAG = "LoginDeserializer";
 
     @Override
     public String deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {

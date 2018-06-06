@@ -2,9 +2,13 @@ package com.gamma.gamenews;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -18,12 +22,16 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gamma.gamenews.Fragment.NewsFragment;
 import com.gamma.gamenews.Utils.SharedPreference;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private Fragment contentFragment;
+    private FragmentManager fragmentManager;
     TextView lblUser, lblToken;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +41,29 @@ public class MainActivity extends AppCompatActivity
         if(SharedPreference.checkLogin()) finish();
         findViews();
 
+        fragmentManager = getSupportFragmentManager();
+        if (savedInstanceState != null){
+            if (savedInstanceState.containsKey("content")){
+                String content = savedInstanceState.getString("content");
+                if (content.equals("news") && fragmentManager.findFragmentByTag("news")!=null){
+                    contentFragment = fragmentManager.findFragmentByTag("news");
+                }
+            }
+        } else {
+            NewsFragment newsFragment = new NewsFragment();
+            setTitle(R.string.app_name);
+            switchContent(newsFragment,"news");
+        }
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (contentFragment instanceof NewsFragment)
+            outState.putString("content", "news");
+        super.onSaveInstanceState(outState);
+    }
+
+
 
     void findViews(){
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -61,13 +91,45 @@ public class MainActivity extends AppCompatActivity
         lblUser.setText(SharedPreference.read(SharedPreference.KEY_NAME,null));
     }
 
+    public void navigate(){
+        if (fragmentManager.getBackStackEntryCount() > 0) {
+            super.onBackPressed();
+        } else if (contentFragment instanceof NewsFragment
+                || fragmentManager.getBackStackEntryCount() == 0) {
+            finish();
+        }
+    }
+
+    public void switchContent(Fragment fragment, String tag) {
+        //while (fragmentManager.popBackStackImmediate());
+
+        if (fragment != null){
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            //transaction.setCustomAnimations(R.anim.slide_in_down, R.anim.slide_out_up,
+              //      R.anim.slide_in_down, R.anim.slide_out_up);
+            transaction.replace(R.id.main_container, fragment, tag);
+
+            if(!(fragment instanceof NewsFragment)){
+                transaction.addToBackStack(tag);
+            }
+            transaction.commit();
+            contentFragment = fragment;
+        }
+    }
+
+    public void setTitle(int resource){
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle(getResources().getString(resource));
+    }
+
+    /* Navigation Drawer Methods */
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            navigate();
         }
     }
 

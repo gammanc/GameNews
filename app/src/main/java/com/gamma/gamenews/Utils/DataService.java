@@ -22,5 +22,5 @@ public interface DataService {
     Call<String> login(@Field("user") String user, @Field("password")String password);
 
     @GET("/news")
-    Call<ArrayList<News>> getNewsList(@Header("Authorization")String auth);
+    Call<ArrayList<News>> getNewsList();
 }
