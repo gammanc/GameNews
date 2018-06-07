@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.gamma.gamenews.Beans.News;
+import com.gamma.gamenews.Fragment.NewsFragment;
 import com.gamma.gamenews.R;
 import com.squareup.picasso.Picasso;
 
@@ -21,16 +22,22 @@ import java.util.ArrayList;
  * Created by emers on 5/6/2018.
  */
 
-public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder> {
+public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder>{
     private Context context;
     private ArrayList<News> newsArray;
 
-    public NewsAdapter(Context context, ArrayList<News> newsArray) {
-        this.context = context;
-        this.newsArray = newsArray;
+    private final onNewsClickHandler mClickHandler;
+    public interface onNewsClickHandler{
+        void onNewsClick(News mNew);
     }
 
-    public static class NewsViewHolder extends RecyclerView.ViewHolder{
+    public NewsAdapter (Context context, ArrayList<News> newsArray, onNewsClickHandler clickHandler) {
+        this.context = context;
+        this.newsArray = newsArray;
+        mClickHandler = clickHandler;
+    }
+
+     class NewsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         LinearLayout card;
         TextView txtTitle, txtSubtitle;
         ImageView imgPicture, btnFav;
@@ -43,6 +50,12 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
             txtSubtitle = itemView.findViewById(R.id.txt_subtitle);
             imgPicture = itemView.findViewById(R.id.img_cover);
             btnFav = itemView.findViewById(R.id.btn_favorite);
+            card.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            mClickHandler.onNewsClick(newsArray.get(getAdapterPosition()));
         }
     }
 
@@ -75,13 +88,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
                     .into(holder.imgPicture);
         } else
             holder.imgPicture.setImageResource(R.drawable.no_image);
-
-        holder.card.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
     }
 
     @Override
