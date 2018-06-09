@@ -1,10 +1,10 @@
-package com.gamma.gamenews.Utils;
+package com.gamma.gamenews.utils;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-import com.gamma.gamenews.UI.LoginActivity;
+import com.gamma.gamenews.ui.LoginActivity;
 
 /*
 * Call once in an activity

@@ -1,4 +1,4 @@
-package com.gamma.gamenews.Data.Network;
+package com.gamma.gamenews.data.network;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
@@ -14,7 +14,7 @@ import com.firebase.jobdispatcher.Job;
 import com.firebase.jobdispatcher.Lifetime;
 import com.firebase.jobdispatcher.Trigger;
 import com.gamma.gamenews.AppExecutors;
-import com.gamma.gamenews.Data.Database.News;
+import com.gamma.gamenews.data.database.News;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -98,12 +98,12 @@ public class NetworkDataSource {
     }
 
     /**
-     * Starts an intent service to fetch the weather.
+     * Starts an intent service to fetch the news.
      */
-    public void startFetchWeatherService() {
+    public void startFetchNewsService() {
         Intent intentToFetch = new Intent(context, SyncIntentService.class);
         context.startService(intentToFetch);
-        Log.d(TAG, "startFetchWeatherService: IntentService created");
+        Log.d(TAG, "startFetchNewsService: IntentService executed");
     }
 
     /**
@@ -118,13 +118,14 @@ public class NetworkDataSource {
                 @Override
                 public void onResponse(Call<ArrayList<News>> call, Response<ArrayList<News>> response) {
                     if(response.isSuccessful()){
-                        //TODO: Averiguar como asignar esto alv
-                        //newsArray = LiveData<response.body()>;
+                        newsArray.postValue(response.body());
+                        Log.d(TAG, "onResponse: News fetching successful!");
                     }
                 }
 
                 @Override
                 public void onFailure(Call<ArrayList<News>> call, Throwable t) {
+                    Log.d(TAG, "onFailure: News fetching failed alv!");
                     t.printStackTrace();
                 }
             });

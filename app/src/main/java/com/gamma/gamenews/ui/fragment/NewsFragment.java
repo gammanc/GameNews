@@ -1,4 +1,4 @@
-package com.gamma.gamenews.UI.Fragment;
+package com.gamma.gamenews.ui.fragment;
 
 
 import android.arch.lifecycle.ViewModelProviders;
@@ -12,10 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.gamma.gamenews.UI.Adapter.NewsAdapter;
-import com.gamma.gamenews.Data.Database.News;
+import com.gamma.gamenews.ui.adapter.NewsAdapter;
+import com.gamma.gamenews.data.database.News;
 import com.gamma.gamenews.R;
-import com.gamma.gamenews.Data.Network.NetworkUtils;
+import com.gamma.gamenews.data.network.NetworkUtils;
+import com.gamma.gamenews.utils.DependencyContainer;
 
 import java.util.ArrayList;
 
@@ -40,6 +41,8 @@ public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHan
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         model = ViewModelProviders.of(getActivity()).get(NewsDetailViewModel.class);
+
+        DependencyContainer.getRepository(this.getContext()).initializeData();
     }
 
     @Override

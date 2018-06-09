@@ -1,4 +1,4 @@
-package com.gamma.gamenews.UI.Fragment;
+package com.gamma.gamenews.ui.fragment;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.gamma.gamenews.Data.Database.News;
+import com.gamma.gamenews.data.database.News;
 import com.gamma.gamenews.R;
 import com.squareup.picasso.Picasso;
 

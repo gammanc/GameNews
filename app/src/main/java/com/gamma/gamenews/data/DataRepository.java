@@ -1,14 +1,18 @@
-package com.gamma.gamenews.Data;
+package com.gamma.gamenews.data;
 
 /**
  * Created by emers on 8/6/2018.
  */
 
+import android.arch.lifecycle.LiveData;
 import android.util.Log;
 
 import com.gamma.gamenews.AppExecutors;
-import com.gamma.gamenews.Data.Database.NewsDao;
-import com.gamma.gamenews.Data.Network.NetworkDataSource;
+import com.gamma.gamenews.data.database.News;
+import com.gamma.gamenews.data.database.NewsDao;
+import com.gamma.gamenews.data.network.NetworkDataSource;
+
+import java.util.ArrayList;
 
 /**
  * Acts like a mediator between the Retrofit Data and Room Data
@@ -31,6 +35,10 @@ public class DataRepository {
         this.newsDao = newsDao;
         this.networkDataSource = networkDataSource;
         this.executors = executors;
+        LiveData<ArrayList<News>> downloadedNews = networkDataSource.getCurrentNews();
+        downloadedNews.observeForever(
+                news -> executors.diskIO().execute(() -> newsDao.insertNews(news))
+        );
     }
 
     public synchronized static DataRepository getInstance(NewsDao newsDao,
@@ -50,7 +58,6 @@ public class DataRepository {
      * Performs periodic sync tasks and check if a sync is required
      * */
     public synchronized void initializeData(){
-
         if (initialized) return;
         initialized = true;
         startFetchService();
@@ -68,6 +75,6 @@ public class DataRepository {
     }
 
     private void startFetchService(){
-        networkDataSource.startFetchWeatherService();
+        networkDataSource.startFetchNewsService();
     }
 }

@@ -1,4 +1,4 @@
-package com.gamma.gamenews.Data.Database;
+package com.gamma.gamenews.data.database;
 
 /**
  * Created by emers on 6/6/2018.

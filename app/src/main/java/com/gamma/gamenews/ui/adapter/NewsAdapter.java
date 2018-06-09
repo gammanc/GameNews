@@ -1,4 +1,4 @@
-package com.gamma.gamenews.UI.Adapter;
+package com.gamma.gamenews.ui.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.gamma.gamenews.Data.Database.News;
+import com.gamma.gamenews.data.database.News;
 import com.gamma.gamenews.R;
 import com.squareup.picasso.Picasso;
 

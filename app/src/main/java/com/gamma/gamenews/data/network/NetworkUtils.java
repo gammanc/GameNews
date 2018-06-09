@@ -1,6 +1,6 @@
-package com.gamma.gamenews.Data.Network;
+package com.gamma.gamenews.data.network;
 
-import com.gamma.gamenews.Utils.SharedPreference;
+import com.gamma.gamenews.utils.SharedPreference;
 import com.google.gson.Gson;
 
 import okhttp3.OkHttpClient;

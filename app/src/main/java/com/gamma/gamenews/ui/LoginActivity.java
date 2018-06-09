@@ -1,4 +1,4 @@
-package com.gamma.gamenews.UI;
+package com.gamma.gamenews.ui;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,11 +11,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-import com.gamma.gamenews.Data.Network.NetworkUtils;
-import com.gamma.gamenews.Data.Network.DataService;
-import com.gamma.gamenews.Data.Network.LoginDeserializer;
+import com.gamma.gamenews.data.network.NetworkUtils;
+import com.gamma.gamenews.data.network.DataService;
+import com.gamma.gamenews.data.network.LoginDeserializer;
 import com.gamma.gamenews.R;
-import com.gamma.gamenews.Utils.SharedPreference;
+import com.gamma.gamenews.utils.SharedPreference;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -61,7 +61,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     btnLogin1.startAnimation();
 
-                    DataService loginService = NetworkUtils.getClientInstance(gson).create(DataService.class);
+                    DataService loginService = NetworkUtils.getClientInstance(gson);
                     Call<String> login = loginService.login(user,pass);
 
                     login.enqueue(new Callback<String>() {

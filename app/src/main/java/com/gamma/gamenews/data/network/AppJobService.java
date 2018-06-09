@@ -1,6 +1,5 @@
-package com.gamma.gamenews.Data.Network;
+package com.gamma.gamenews.data.network;
 
-import android.annotation.TargetApi;
 import android.util.Log;
 
 import com.firebase.jobdispatcher.JobParameters;

@@ -8,7 +8,7 @@
     android:padding="16dp"
     android:layout_centerVertical="true"
     android:background="@drawable/scrim_bottom"
-    tools:context="com.gamma.gamenews.UI.LoginActivity">
+    tools:context="com.gamma.gamenews.ui.LoginActivity">
 
     <ImageView
         android:layout_width="250dp"

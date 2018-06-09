@@ -1,6 +1,6 @@
-package com.gamma.gamenews.Data.Network;
+package com.gamma.gamenews.data.network;
 
-import com.gamma.gamenews.Data.Database.News;
+import com.gamma.gamenews.data.database.News;
 
 import java.util.ArrayList;
 

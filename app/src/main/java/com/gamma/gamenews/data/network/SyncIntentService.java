@@ -1,11 +1,11 @@
-package com.gamma.gamenews.Data.Network;
+package com.gamma.gamenews.data.network;
 
 import android.app.IntentService;
-import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.util.Log;
+
+import com.gamma.gamenews.utils.DependencyContainer;
 
 /**
  * Created by emers on 8/6/2018.
@@ -26,6 +26,8 @@ public class SyncIntentService extends IntentService{
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         Log.d(TAG, "onHandleIntent: Intent service started");
-        //TODO: completar este método
+        NetworkDataSource networkDataSource =
+                DependencyContainer.getNetworkDataSource(this.getApplicationContext());
+        networkDataSource.fetchNews();
     }
 }

@@ -1,6 +1,4 @@
-package com.gamma.gamenews.Data.Network;
-
-import android.util.Log;
+package com.gamma.gamenews.data.network;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;

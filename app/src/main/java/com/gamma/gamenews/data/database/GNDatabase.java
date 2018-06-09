@@ -1,4 +1,4 @@
-package com.gamma.gamenews.Data.Database;
+package com.gamma.gamenews.data.database;
 
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
