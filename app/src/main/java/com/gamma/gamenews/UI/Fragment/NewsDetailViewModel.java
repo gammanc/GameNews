@@ -1,10 +1,10 @@
-package com.gamma.gamenews.Fragment;
+package com.gamma.gamenews.UI.Fragment;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
-import com.gamma.gamenews.Beans.News;
+import com.gamma.gamenews.Data.Database.News;
 
 /**
  * Created by emers on 6/6/2018.

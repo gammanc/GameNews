@@ -1,29 +1,22 @@
-package com.gamma.gamenews.Fragment;
+package com.gamma.gamenews.UI.Fragment;
 
 
-import android.arch.lifecycle.ViewModel;
-import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.gamma.gamenews.Adapter.NewsAdapter;
-import com.gamma.gamenews.Beans.News;
+import com.gamma.gamenews.UI.Adapter.NewsAdapter;
+import com.gamma.gamenews.Data.Database.News;
 import com.gamma.gamenews.R;
-import com.gamma.gamenews.Utils.Client;
-import com.gamma.gamenews.Utils.DataService;
-import com.gamma.gamenews.Utils.SharedPreference;
+import com.gamma.gamenews.Data.Network.NetworkUtils;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -63,8 +56,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHan
     }
 
     private void getNewsList(){
-        DataService service = Client.getClientInstanceAuth().create(DataService.class);
-        Call<ArrayList<News>> call = service.getNewsList();
+        Call<ArrayList<News>> call = NetworkUtils.getClientInstanceAuth().getNewsList();
         call.enqueue(new Callback<ArrayList<News>>() {
             @Override
             public void onResponse(Call<ArrayList<News>> call, Response<ArrayList<News>> response) {

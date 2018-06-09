@@ -3,9 +3,8 @@ package com.gamma.gamenews.Utils;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 
-import com.gamma.gamenews.LoginActivity;
+import com.gamma.gamenews.UI.LoginActivity;
 
 /*
 * Call once in an activity

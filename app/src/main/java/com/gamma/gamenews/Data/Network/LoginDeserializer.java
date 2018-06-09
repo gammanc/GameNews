@@ -1,4 +1,4 @@
-package com.gamma.gamenews.Utils;
+package com.gamma.gamenews.Data.Network;
 
 import android.util.Log;
 

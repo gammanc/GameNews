@@ -1,12 +1,10 @@
-package com.gamma.gamenews.Database;
+package com.gamma.gamenews.Data.Database;
 
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
-
-import com.gamma.gamenews.Beans.News;
 
 /**
  * Created by emers on 6/6/2018.

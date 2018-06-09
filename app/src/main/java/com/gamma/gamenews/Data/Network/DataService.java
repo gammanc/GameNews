@@ -1,6 +1,6 @@
-package com.gamma.gamenews.Utils;
+package com.gamma.gamenews.Data.Network;
 
-import com.gamma.gamenews.Beans.News;
+import com.gamma.gamenews.Data.Database.News;
 
 import java.util.ArrayList;
 
@@ -8,7 +8,6 @@ import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
 import retrofit2.http.POST;
 
 /**

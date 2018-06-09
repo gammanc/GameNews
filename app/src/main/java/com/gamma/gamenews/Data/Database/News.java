@@ -1,4 +1,4 @@
-package com.gamma.gamenews.Beans;
+package com.gamma.gamenews.Data.Database;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;

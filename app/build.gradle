@@ -50,6 +50,9 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:$lifecycle_version"
     annotationProcessor "android.arch.lifecycle:compiler:$lifecycle_version"
 
+    def firebase_version = "0.8.5"
+    implementation "com.firebase:firebase-jobdispatcher:$firebase_version"
+
     implementation 'com.android.support:support-v4:27.1.1'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

@@ -1,7 +1,7 @@
-package com.gamma.gamenews.Utils;
+package com.gamma.gamenews.Data.Network;
 
+import com.gamma.gamenews.Utils.SharedPreference;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -12,36 +12,42 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by emers on 4/6/2018.
  */
 
-public class Client {
+/**
+ * Method to connect the app with the provided API GameNewsUCA
+ * */
+public class NetworkUtils {
     private static Retrofit retrofit;
     private static String BASE_URL = "http://gamenewsuca.herokuapp.com";
+    private static DataService dataService;
 
-    public static Retrofit getClientInstance(Gson gson){
+    public static DataService getClientInstance(Gson gson){
         retrofit = new retrofit2.Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
-        return retrofit;
+        dataService = retrofit.create(DataService.class);
+        return dataService;
     }
-    public static Retrofit getClientInstance(){
+    public static DataService getClientInstance(){
         retrofit = new retrofit2.Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        return retrofit;
+        dataService = retrofit.create(DataService.class);
+        return dataService;
     }
-    public static Retrofit getClientInstanceAuth(){
+    public static DataService getClientInstanceAuth(){
         retrofit = new retrofit2.Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .client(getHeader())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        return retrofit;
+        dataService = retrofit.create(DataService.class);
+        return dataService;
     }
 
     private static OkHttpClient getHeader() {
         final String token = SharedPreference.read(SharedPreference.TOKEN,null);
-        System.out.println("TOKEN :"+token);
         return new OkHttpClient.Builder().addInterceptor(chain -> {
             Request newRequest = chain.request().newBuilder()
                     .addHeader("Authorization", "Bearer " + token)
