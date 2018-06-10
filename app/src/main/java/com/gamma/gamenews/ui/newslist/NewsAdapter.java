@@ -1,4 +1,4 @@
-package com.gamma.gamenews.ui.adapter;
+package com.gamma.gamenews.ui.newslist;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -15,6 +15,7 @@ import com.gamma.gamenews.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by emers on 5/6/2018.
@@ -22,14 +23,14 @@ import java.util.ArrayList;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder>{
     private Context context;
-    private ArrayList<News> newsArray;
+    private List<News> newsArray;
 
     private final onNewsClickHandler mClickHandler;
     public interface onNewsClickHandler{
         void onNewsClick(News mNew);
     }
 
-    public NewsAdapter (Context context, ArrayList<News> newsArray, onNewsClickHandler clickHandler) {
+    public NewsAdapter (Context context, List<News> newsArray, onNewsClickHandler clickHandler) {
         this.context = context;
         this.newsArray = newsArray;
         mClickHandler = clickHandler;

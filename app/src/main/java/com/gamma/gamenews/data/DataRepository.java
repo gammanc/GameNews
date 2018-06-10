@@ -13,6 +13,7 @@ import com.gamma.gamenews.data.database.NewsDao;
 import com.gamma.gamenews.data.network.NetworkDataSource;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Acts like a mediator between the Retrofit Data and Room Data
@@ -57,13 +58,23 @@ public class DataRepository {
     /**
      * Performs periodic sync tasks and check if a sync is required
      * */
-    public synchronized void initializeData(){
+    private synchronized void initializeData(){
         if (initialized) return;
         initialized = true;
         startFetchService();
     }
 
     // Database operations
+
+    public LiveData<News> getNewById(String id){
+        initializeData();
+        return newsDao.getNewDetail(id);
+    }
+
+    public LiveData<List<News>> getNews(){
+        initializeData();
+        return newsDao.getAll();
+    }
 
     //TODO: complete this methods
     private void deleteOldData(){

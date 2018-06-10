@@ -23,7 +23,9 @@ public abstract class GNDatabase extends RoomDatabase{
             synchronized (LOCK){
                 if (instance == null){
                     instance = Room.databaseBuilder(context.getApplicationContext(),
-                            GNDatabase.class, GNDatabase.DATABASE_NAME).build();
+                            GNDatabase.class, GNDatabase.DATABASE_NAME)
+                            .allowMainThreadQueries()
+                            .build();
                 }
             }
         }

@@ -7,7 +7,7 @@
     android:fillViewport="true"
     android:clipToPadding="false"
     android:paddingBottom="80dp"
-    tools:context=".ui.fragment.NewsDetailFragment">
+    tools:context=".ui.newsdetail.NewsDetailFragment">
     <LinearLayout android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">

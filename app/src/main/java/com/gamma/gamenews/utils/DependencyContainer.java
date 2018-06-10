@@ -6,6 +6,8 @@ import com.gamma.gamenews.AppExecutors;
 import com.gamma.gamenews.data.DataRepository;
 import com.gamma.gamenews.data.database.GNDatabase;
 import com.gamma.gamenews.data.network.NetworkDataSource;
+import com.gamma.gamenews.ui.newsdetail.DetailViewModelFactory;
+import com.gamma.gamenews.ui.newslist.NewsViewModelFactory;
 
 /**
  * Created by emers on 8/6/2018.
@@ -30,5 +32,15 @@ public class DependencyContainer {
     public static NetworkDataSource getNetworkDataSource(Context context){
         AppExecutors executors = AppExecutors.getInstance();
         return NetworkDataSource.getInstance(context.getApplicationContext(), executors);
+    }
+
+    public static DetailViewModelFactory getDetailViewModelFactory(Context context, String id){
+        DataRepository dataRepository = getRepository(context.getApplicationContext());
+        return new DetailViewModelFactory(dataRepository, id);
+    }
+
+    public static NewsViewModelFactory getNewsViewModelFactory(Context context){
+        DataRepository dataRepository = getRepository(context.getApplicationContext());
+        return new NewsViewModelFactory(dataRepository);
     }
 }

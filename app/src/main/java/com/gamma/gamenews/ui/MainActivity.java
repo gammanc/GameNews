@@ -18,7 +18,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.gamma.gamenews.R;
-import com.gamma.gamenews.ui.fragment.NewsFragment;
+import com.gamma.gamenews.ui.newslist.NewsFragment;
 import com.gamma.gamenews.utils.SharedPreference;
 
 public class MainActivity extends AppCompatActivity

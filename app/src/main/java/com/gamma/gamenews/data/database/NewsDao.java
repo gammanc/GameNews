@@ -1,5 +1,6 @@
 package com.gamma.gamenews.data.database;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
@@ -19,7 +20,10 @@ public interface NewsDao {
     void insertNews(ArrayList<News> news);
 
     @Query("SELECT * FROM news ORDER BY created_date DESC")
-    List<News> getAll();
+    LiveData<List<News>> getAll();
+
+    @Query("SELECT * FROM news WHERE id = :newid")
+    LiveData<News> getNewDetail(String newid);
 
     @Insert
     void bulkInsert(News... weather);

@@ -1,24 +1,29 @@
-package com.gamma.gamenews.ui.fragment;
+package com.gamma.gamenews.ui.newslist;
 
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.gamma.gamenews.ui.adapter.NewsAdapter;
+import com.gamma.gamenews.ui.newsdetail.DetailViewModelFactory;
+import com.gamma.gamenews.ui.newsdetail.NewsDetailActivity;
+import com.gamma.gamenews.ui.newsdetail.NewsDetailViewModel;
+import com.gamma.gamenews.ui.newslist.NewsAdapter;
 import com.gamma.gamenews.data.database.News;
 import com.gamma.gamenews.R;
 import com.gamma.gamenews.data.network.NetworkUtils;
 import com.gamma.gamenews.utils.DependencyContainer;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,7 +34,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHan
 
     RecyclerView newsRecycler;
     NewsAdapter newsAdapter;
-    ArrayList<News> newsArray;
+    List<News> newsArray;
     NewsDetailViewModel model;
 
     final String TAG = "NewsFragment";
@@ -40,9 +45,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHan
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        model = ViewModelProviders.of(getActivity()).get(NewsDetailViewModel.class);
-
-        DependencyContainer.getRepository(this.getContext()).initializeData();
+        //DependencyContainer.getRepository(this.getContext()).initializeData();
     }
 
     @Override
@@ -54,10 +57,22 @@ public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHan
         newsRecycler.setHasFixedSize(true);
         newsRecycler.setLayoutManager(new LinearLayoutManager(container.getContext()));
 
-        getNewsList();
         return v;
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        NewsViewModelFactory factory = DependencyContainer.getNewsViewModelFactory(getContext());
+        NewsViewModel model = ViewModelProviders.of(this, factory).get(NewsViewModel.class);
+        model.getLatestNews().observe(this, news -> {
+            Log.d(TAG, "onCreate: Ejecutando observer...");
+            loadList(news);
+        });
+    }
+
+    /*
     private void getNewsList(){
         Call<ArrayList<News>> call = NetworkUtils.getClientInstanceAuth().getNewsList();
         call.enqueue(new Callback<ArrayList<News>>() {
@@ -73,9 +88,9 @@ public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHan
                 t.printStackTrace();
             }
         });
-    }
+    }*/
 
-    void loadList(ArrayList<News> news){
+    void loadList(List<News> news){
         // TODO: Verificar si la lista está vacía
         newsArray = news;
         newsAdapter = new NewsAdapter(getContext(), newsArray,this);
@@ -84,7 +99,11 @@ public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHan
 
     @Override
     public void onNewsClick(News mNew) {
-        model.setNew(mNew);
+        //model.setNew(mNew);
+        Intent intent = new Intent(getContext(), NewsDetailActivity.class);
+        intent.putExtra("id",mNew.getId());
+        startActivity(intent);
+        /*
         NewsDetailFragment fragment = new NewsDetailFragment();
         FragmentManager fm = getFragmentManager();
         fm.beginTransaction()
@@ -93,6 +112,6 @@ public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHan
                 .add(R.id.main_container,fragment)
                 .hide(fm.findFragmentByTag("news"))
                 .addToBackStack("detail")
-                .commit();
+                .commit();*/
     }
 }

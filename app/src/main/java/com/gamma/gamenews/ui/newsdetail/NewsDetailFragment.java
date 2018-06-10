@@ -1,4 +1,4 @@
-package com.gamma.gamenews.ui.fragment;
+package com.gamma.gamenews.ui.newsdetail;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
@@ -73,7 +73,6 @@ public class NewsDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_news_detail, container, false);
-        Log.d(TAG, "onCreateView: ESTOY EN EL PUTO ON CREATEVIEW");
         coverImage = v.findViewById(R.id.img_cover);
         btnFavorite = v.findViewById(R.id.btn_favorite);
         txtTitle = v.findViewById(R.id.txt_title);
