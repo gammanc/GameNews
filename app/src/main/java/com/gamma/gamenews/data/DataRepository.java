@@ -1,9 +1,5 @@
 package com.gamma.gamenews.data;
 
-/**
- * Created by emers on 8/6/2018.
- */
-
 import android.arch.lifecycle.LiveData;
 import android.util.Log;
 
@@ -16,10 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Acts like a mediator between the Retrofit Data and Room Data
+ * Handles data operations in the app
  * */
 public class DataRepository {
-    private static final String TAG = DataRepository.class.getSimpleName();
+    private static final String TAG = "GN:DataRepository";
 
     private static DataRepository instance;
     private static final Object LOCK = new Object();
@@ -38,18 +34,21 @@ public class DataRepository {
         this.executors = executors;
         LiveData<ArrayList<News>> downloadedNews = networkDataSource.getCurrentNews();
         downloadedNews.observeForever(
-                news -> executors.diskIO().execute(() -> newsDao.insertNews(news))
+                news -> executors.diskIO().execute(() -> {
+                    Log.d(TAG, "DataRepository: inserting into database");
+                    newsDao.insertNews(news);
+                })
         );
     }
 
     public synchronized static DataRepository getInstance(NewsDao newsDao,
                                                           NetworkDataSource networkDataSource,
                                                           AppExecutors executors){
-        Log.d(TAG, "getInstance: Getting the repository ...");
+        Log.d(TAG, "getInstance: Providing Repository");
         if(instance == null){
             synchronized (LOCK){
                 instance = new DataRepository(newsDao, networkDataSource, executors);
-                Log.d(TAG, "getInstance: New repository made!");
+                Log.d(TAG, "getInstance: New repository made");
             }
         }
         return instance;
@@ -59,6 +58,7 @@ public class DataRepository {
      * Performs periodic sync tasks and check if a sync is required
      * */
     private synchronized void initializeData(){
+        Log.d(TAG, "initializeData? "+(!initialized?"Yes":"No"));
         if (initialized) return;
         initialized = true;
         startFetchService();

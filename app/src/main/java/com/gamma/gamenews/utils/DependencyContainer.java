@@ -10,10 +10,6 @@ import com.gamma.gamenews.ui.newsdetail.DetailViewModelFactory;
 import com.gamma.gamenews.ui.newslist.NewsViewModelFactory;
 
 /**
- * Created by emers on 8/6/2018.
- */
-
-/**
  * Creates classes instances which other classes need
  * This to avoid hard dependencies creating within the actual class
  * */

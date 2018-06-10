@@ -1,13 +1,12 @@
 package com.gamma.gamenews.data.database;
 
-/**
- * Created by emers on 6/6/2018.
- */
-
 import android.arch.persistence.room.TypeConverter;
 
 import java.util.Date;
 
+/**
+ * Converts TimeStamp to Date and vice versa
+ * */
 class DateConverter {
     @TypeConverter
     public static Date toDate(Long timestamp) {

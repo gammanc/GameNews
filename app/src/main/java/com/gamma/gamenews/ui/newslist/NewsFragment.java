@@ -37,7 +37,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHan
     List<News> newsArray;
     NewsDetailViewModel model;
 
-    final String TAG = "NewsFragment";
+    private static final String TAG = "GameNews - NewsFragment";
 
     public NewsFragment() {
     }
@@ -45,7 +45,6 @@ public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHan
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //DependencyContainer.getRepository(this.getContext()).initializeData();
     }
 
     @Override
@@ -64,31 +63,13 @@ public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHan
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        Log.d(TAG, "onActivityCreated: Getting the ModelFactory");
         NewsViewModelFactory factory = DependencyContainer.getNewsViewModelFactory(getContext());
         NewsViewModel model = ViewModelProviders.of(this, factory).get(NewsViewModel.class);
         model.getLatestNews().observe(this, news -> {
-            Log.d(TAG, "onCreate: Ejecutando observer...");
             loadList(news);
         });
     }
-
-    /*
-    private void getNewsList(){
-        Call<ArrayList<News>> call = NetworkUtils.getClientInstanceAuth().getNewsList();
-        call.enqueue(new Callback<ArrayList<News>>() {
-            @Override
-            public void onResponse(Call<ArrayList<News>> call, Response<ArrayList<News>> response) {
-                if(response.isSuccessful()){
-                    loadList(response.body());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ArrayList<News>> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
-    }*/
 
     void loadList(List<News> news){
         // TODO: Verificar si la lista está vacía
@@ -99,7 +80,6 @@ public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHan
 
     @Override
     public void onNewsClick(News mNew) {
-        //model.setNew(mNew);
         Intent intent = new Intent(getContext(), NewsDetailActivity.class);
         intent.putExtra("id",mNew.getId());
         startActivity(intent);

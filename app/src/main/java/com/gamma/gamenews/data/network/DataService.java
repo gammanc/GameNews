@@ -11,7 +11,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 /**
- * Created by emers on 4/6/2018.
+ * Defines the operations that NetworkUtils can perform
  */
 
 public interface DataService {

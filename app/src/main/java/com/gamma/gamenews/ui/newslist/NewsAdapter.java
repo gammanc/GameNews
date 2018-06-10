@@ -17,10 +17,6 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by emers on 5/6/2018.
- */
-
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder>{
     private Context context;
     private List<News> newsArray;

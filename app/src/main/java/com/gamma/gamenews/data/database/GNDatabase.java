@@ -7,9 +7,8 @@ import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 
 /**
- * Created by emers on 6/6/2018.
+ * Principal instance of database
  */
-
 @Database(entities = {News.class}, version = 1)
 @TypeConverters(DateConverter.class)
 public abstract class GNDatabase extends RoomDatabase{
@@ -24,7 +23,6 @@ public abstract class GNDatabase extends RoomDatabase{
                 if (instance == null){
                     instance = Room.databaseBuilder(context.getApplicationContext(),
                             GNDatabase.class, GNDatabase.DATABASE_NAME)
-                            .allowMainThreadQueries()
                             .build();
                 }
             }

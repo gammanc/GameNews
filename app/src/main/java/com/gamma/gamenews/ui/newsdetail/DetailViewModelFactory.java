@@ -6,10 +6,6 @@ import android.support.annotation.NonNull;
 
 import com.gamma.gamenews.data.DataRepository;
 
-/**
- * Created by emers on 9/6/2018.
- */
-
 public class DetailViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     private final DataRepository dataRepository;
     private final String id;

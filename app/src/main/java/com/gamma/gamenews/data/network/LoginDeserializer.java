@@ -8,13 +8,7 @@ import com.google.gson.JsonParseException;
 
 import java.lang.reflect.Type;
 
-/**
- * Created by emers on 4/6/2018.
- */
-
 public class LoginDeserializer implements JsonDeserializer<String> {
-    private static final String TAG = "LoginDeserializer";
-
     @Override
     public String deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject logininfo = json.getAsJsonObject();

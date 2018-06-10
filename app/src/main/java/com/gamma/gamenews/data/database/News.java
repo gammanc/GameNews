@@ -9,9 +9,8 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Date;
 
 /**
- * Created by emers on 5/6/2018.
+ * News entity definition
  */
-
 @Entity(tableName = "news")
 public class News {
 

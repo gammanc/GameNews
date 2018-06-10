@@ -6,9 +6,6 @@ import android.arch.lifecycle.ViewModel;
 import com.gamma.gamenews.data.DataRepository;
 import com.gamma.gamenews.data.database.News;
 
-/**
- * Created by emers on 6/6/2018.
- */
 
 public class NewsDetailViewModel extends ViewModel {
     private final LiveData<News> mNew;
@@ -17,7 +14,7 @@ public class NewsDetailViewModel extends ViewModel {
 
     public NewsDetailViewModel(DataRepository repository, String id){
         dataRepository = repository;
-        mNew = repository.getNewById(id);
+        mNew = dataRepository.getNewById(id);
     }
 
     public LiveData<News> getNew() {

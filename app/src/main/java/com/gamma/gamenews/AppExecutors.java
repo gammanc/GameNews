@@ -1,9 +1,5 @@
 package com.gamma.gamenews;
 
-/**
- * Created by emers on 7/6/2018.
- */
-
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;

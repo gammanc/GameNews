@@ -17,11 +17,10 @@ import com.squareup.picasso.Picasso;
 
 public class NewsDetailActivity extends AppCompatActivity {
 
-    News mNew;
     ImageView coverImage, btnFavorite;
     TextView txtTitle, txtSubtitle, txtGame, txtBody;
     CollapsingToolbarLayout collapsingToolbar;
-    final String TAG = "NewsDetail";
+    private static final String TAG = "GN:NewsDetailActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,44 +32,46 @@ public class NewsDetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String newid = intent.getStringExtra("id");
 
+        Log.d(TAG, "onCreate: Getting the ModelFactory");
         DetailViewModelFactory factory = DependencyContainer.getDetailViewModelFactory(this, newid);
         NewsDetailViewModel model = ViewModelProviders.of(this, factory).get(NewsDetailViewModel.class);
 
-        //Log.d(TAG, "onCreate: Noticia: "+mNew.getTitle());
-
         model.getNew().observe(this, mNew -> {
-            Log.d(TAG, "onCreate: Estoy en el observer");
             if(mNew != null) {
-                collapsingToolbar.setTitle(mNew.getGame().toUpperCase());
-                if (mNew.getCoverImage() != null) {
-                    Picasso.get().load(mNew.getCoverImage())
-                            .error(R.drawable.no_image)
-                            .placeholder(R.drawable.no_image)
-                            .into(coverImage);
-                } else
-                    coverImage.setImageResource(R.drawable.no_image);
-
-                if (mNew.getTitle() != null)
-                    txtTitle.setText(mNew.getTitle().trim());
-                else
-                    txtTitle.setText(getResources().getString(R.string.no_title_available));
-
-                if (mNew.getDescription() != null)
-                    txtSubtitle.setText(mNew.getDescription().trim());
-                else
-                    txtSubtitle.setText(getResources().getString(R.string.no_description_available));
-
-                if (mNew.getGame() != null)
-                    txtGame.setText(mNew.getGame().trim());
-                else
-                    txtGame.setText(getResources().getString(R.string.no_game));
-
-                if (mNew.getBody() != null)
-                    txtBody.setText(mNew.getBody().trim());
-                else
-                    txtBody.setText(getResources().getString(R.string.no_game));
-            } else Log.d(TAG, "onCreate: La noticia es nula alv");
+                updateUI(mNew);
+            } else Log.d(TAG, "observer: Data is null");
         });
+    }
+
+    private void updateUI(News mNew){
+        collapsingToolbar.setTitle(mNew.getGame().toUpperCase());
+        if (mNew.getCoverImage() != null) {
+            Picasso.get().load(mNew.getCoverImage())
+                    .error(R.drawable.no_image)
+                    .placeholder(R.drawable.no_image)
+                    .into(coverImage);
+        } else
+            coverImage.setImageResource(R.drawable.no_image);
+
+        if (mNew.getTitle() != null)
+            txtTitle.setText(mNew.getTitle().trim());
+        else
+            txtTitle.setText(getResources().getString(R.string.no_title_available));
+
+        if (mNew.getDescription() != null)
+            txtSubtitle.setText(mNew.getDescription().trim());
+        else
+            txtSubtitle.setText(getResources().getString(R.string.no_description_available));
+
+        if (mNew.getGame() != null)
+            txtGame.setText(mNew.getGame().trim());
+        else
+            txtGame.setText(getResources().getString(R.string.no_game));
+
+        if (mNew.getBody() != null)
+            txtBody.setText(mNew.getBody().trim());
+        else
+            txtBody.setText(getResources().getString(R.string.no_game));
     }
 
     private void findViews(){

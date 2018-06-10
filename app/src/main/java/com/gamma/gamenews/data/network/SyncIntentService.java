@@ -8,16 +8,15 @@ import android.util.Log;
 import com.gamma.gamenews.utils.DependencyContainer;
 
 /**
- * Created by emers on 8/6/2018.
+ * Performs data sync on a diferent thread
+ * so if the app is closed, the task will still complete
  */
 
 public class SyncIntentService extends IntentService{
-    private static final String TAG = SyncIntentService.class.getSimpleName();
+    private static final String TAG = "GN:SyncIntentService";
 
     /**
-     * Creates an IntentService.  Invoked by your subclass's constructor.
-     *
-     *  name : Used to name the worker thread, important only for debugging.
+     * Creates an IntentService for fetch the data
      */
     public SyncIntentService() {
         super("SyncIntentService");
@@ -29,5 +28,11 @@ public class SyncIntentService extends IntentService{
         NetworkDataSource networkDataSource =
                 DependencyContainer.getNetworkDataSource(this.getApplicationContext());
         networkDataSource.fetchNews();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy: Intent service finished");
     }
 }

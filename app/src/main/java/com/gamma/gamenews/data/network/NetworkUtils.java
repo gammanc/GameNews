@@ -9,11 +9,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Created by emers on 4/6/2018.
- */
-
-/**
- * Method to connect the app with the provided API GameNewsUCA
+ * Performs the actual connection with the API servers
  * */
 public class NetworkUtils {
     private static Retrofit retrofit;

@@ -20,7 +20,7 @@ public class NewsDetailFragment extends Fragment {
     News mNew;
     ImageView coverImage, btnFavorite;
     TextView txtTitle, txtSubtitle, txtGame, txtBody;
-    final String TAG = "NewsDetail";
+    private static final String TAG = "GN:NewsDetailFragment";
     public NewsDetailFragment() {
     }
 

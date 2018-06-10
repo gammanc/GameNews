@@ -5,13 +5,8 @@ import android.util.Log;
 import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
 
-/**
- * Created by emers on 7/6/2018.
- */
-
 public class AppJobService extends JobService {
-    private static final String TAG = AppJobService.class.getSimpleName();
-
+    private static final String TAG = "GN:AppJobService";
 
     @Override
     public boolean onStartJob(JobParameters params) {

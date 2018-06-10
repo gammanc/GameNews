@@ -24,17 +24,14 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
- * Created by emers on 7/6/2018.
- */
-
-/**
- * Provide the operations with the API server
+ * Manages operations to perform with the API
+ * Provides the most recent downloaded data
  * */
 public class NetworkDataSource {
 
     //Number of days we want API to return
     public static final int NUM_DAYS = 14;
-    private static final String TAG = NetworkDataSource.class.getSimpleName();
+    private static final String TAG = "GN:NetworkDataSorce";
 
     //Setting intervals to do sync
     private static final int SYNC_INTERVAL_HOURS = 3;
@@ -60,7 +57,7 @@ public class NetworkDataSource {
      * Get the class singleton
      */
     public static NetworkDataSource getInstance(Context context, AppExecutors executors){
-        Log.d(TAG, "Getting NetworkDataSource");
+        Log.d(TAG, "Providing NetworkDataSource");
         if(mInstance == null){
             synchronized (LOCK){
                 mInstance = new NetworkDataSource(context.getApplicationContext(), executors);
