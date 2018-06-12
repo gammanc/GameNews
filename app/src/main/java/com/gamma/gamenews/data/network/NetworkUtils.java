@@ -41,6 +41,15 @@ public class NetworkUtils {
         dataService = retrofit.create(DataService.class);
         return dataService;
     }
+    public static DataService getClientInstanceAuth(Gson gson){
+        retrofit = new retrofit2.Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .client(getHeader())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+        dataService = retrofit.create(DataService.class);
+        return dataService;
+    }
 
     private static OkHttpClient getHeader() {
         final String token = SharedPreference.read(SharedPreference.TOKEN,null);

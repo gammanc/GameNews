@@ -37,7 +37,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHan
     List<News> newsArray;
     NewsDetailViewModel model;
 
-    private static final String TAG = "GameNews - NewsFragment";
+    private static final String TAG = "GN:NewsFragment";
 
     public NewsFragment() {
     }

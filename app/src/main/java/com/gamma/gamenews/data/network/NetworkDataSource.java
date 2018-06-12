@@ -15,6 +15,9 @@ import com.firebase.jobdispatcher.Lifetime;
 import com.firebase.jobdispatcher.Trigger;
 import com.gamma.gamenews.AppExecutors;
 import com.gamma.gamenews.data.database.News;
+import com.gamma.gamenews.utils.SharedPreference;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -127,6 +130,34 @@ public class NetworkDataSource {
                 }
             });
 
+        });
+    }
+
+    public void getUserDetails(){
+        Log.d(TAG, "getUserDetails: Getting user info");
+        executors.networkIO().execute(()-> {
+            Gson gson = new GsonBuilder().registerTypeAdapter(
+                    ArrayList.class, //lo que devuelve
+                    //String.class,
+                    new UserDeserializer() //lo que transforma
+            ).create();
+            Call<ArrayList<String>> call = NetworkUtils.getClientInstanceAuth(gson).getUserDetails();
+            call.enqueue(new Callback<ArrayList<String>>() {
+                @Override
+                public void onResponse(Call<ArrayList<String>> call, Response<ArrayList<String>> response) {
+                    if (response.isSuccessful()){
+                        Log.d(TAG, "onResponse: The response was successful");
+                        for(String n : response.body()){
+                            SharedPreference.addFavorite(n);
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ArrayList<String>> call, Throwable t) {
+
+                }
+            });
         });
     }
 }

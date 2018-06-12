@@ -39,7 +39,10 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".ui.newsdetail.NewsDetailActivity"></activity>
+        <activity android:name=".ui.newsdetail.NewsDetailActivity">
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MainActivity"/>
+        </activity>
     </application>
 
 </manifest>

@@ -25,7 +25,7 @@ public class News {
     private String description;
     private Date created_date;
 
-    public News(String id, String title, String body, String game,
+    public News(@NonNull String id, String title, String body, String game,
                 String coverImage, String description, Date created_date) {
         this.id = id;
         this.title = title;

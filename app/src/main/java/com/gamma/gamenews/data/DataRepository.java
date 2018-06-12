@@ -32,11 +32,14 @@ public class DataRepository {
         this.newsDao = newsDao;
         this.networkDataSource = networkDataSource;
         this.executors = executors;
+
         LiveData<ArrayList<News>> downloadedNews = networkDataSource.getCurrentNews();
+        networkDataSource.getUserDetails();
         downloadedNews.observeForever(
-                news -> executors.diskIO().execute(() -> {
+                news -> this.executors.diskIO().execute(() -> {
                     Log.d(TAG, "DataRepository: inserting into database");
                     newsDao.insertNews(news);
+
                 })
         );
     }

@@ -3,8 +3,15 @@ package com.gamma.gamenews.utils;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.gamma.gamenews.ui.LoginActivity;
+import com.google.gson.Gson;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 
 /*
 * Call once in an activity
@@ -26,6 +33,10 @@ public class SharedPreference {
     public static final String IS_LOGGED_IN = "islogged";
     public static final String KEY_NAME = "username";
     public static final String TOKEN = "token";
+    public static final String USER_ID = "userid";
+    public static final String FAVS = "favorites";
+
+    private static final String TAG = "GN:SharedPreference";
 
     private SharedPreference() {
     }
@@ -74,6 +85,7 @@ public class SharedPreference {
         write(IS_LOGGED_IN, true);
         write(KEY_NAME, name);
         write(TOKEN, token);
+        Log.d("GN: SharedPref:", "token: "+token);
     }
 
     public static boolean checkLogin(){
@@ -97,6 +109,47 @@ public class SharedPreference {
 
     public static boolean isLoggedIn(){
         return read(IS_LOGGED_IN,false);
+    }
+
+    /*Favorites*/
+    private static void saveFavorites (List<String> favs){
+        Gson gson = new Gson();
+        String jsonFavs = gson.toJson(favs);
+
+        editor.putString(FAVS ,jsonFavs);
+        editor.commit();
+    }
+
+    public static ArrayList<String> getFavorites(){
+        SharedPreferences settings;
+        List<String> favs;
+
+        if(mSharedPref.contains(FAVS)){
+            String jsonFavs = read(FAVS, null);
+            Gson g = new Gson();
+            String[] favItems = g.fromJson(jsonFavs, String[].class);
+
+            favs = Arrays.asList(favItems);
+            favs = new ArrayList<>(favs);
+        } else return null;
+
+        return (ArrayList<String>) favs;
+    }
+
+    public static void addFavorite(String s){
+        ArrayList<String> favs = getFavorites();
+        if(favs == null) favs = new ArrayList<>();
+        favs.add(s);
+        saveFavorites(favs);
+        Log.d(TAG, "addFavorite: success");
+    }
+
+    public static void removeFavorite(String s){
+        ArrayList<String> favs = getFavorites();
+        if(favs != null) {
+            if(favs.remove(s)) Log.d(TAG, "removeFavorite: success");
+            saveFavorites(favs);
+        }
     }
 }
 
