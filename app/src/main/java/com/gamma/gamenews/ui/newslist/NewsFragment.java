@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -30,11 +31,13 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHandler{
+public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHandler, SwipeRefreshLayout.OnRefreshListener{
 
     RecyclerView newsRecycler;
     NewsAdapter newsAdapter;
+    SwipeRefreshLayout swipeRefreshLayout;
     List<News> newsArray;
+    NewsViewModel newsViewModel;
     NewsDetailViewModel model;
 
     private static final String TAG = "GN:NewsFragment";
@@ -56,6 +59,11 @@ public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHan
         newsRecycler.setHasFixedSize(true);
         newsRecycler.setLayoutManager(new LinearLayoutManager(container.getContext()));
 
+        swipeRefreshLayout = v.findViewById(R.id.main_swiperefresh);
+        swipeRefreshLayout.setOnRefreshListener(this);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorDivider, R.color.colorAccent);
+        swipeRefreshLayout.post(()->{ swipeRefreshLayout.setRefreshing(true); });
+
         return v;
     }
 
@@ -63,19 +71,33 @@ public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHan
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        Log.d(TAG, "onActivityCreated: Getting the ModelFactory");
+        Log.d(TAG, "onActivityCreated: Setting NewsModelFactory");
         NewsViewModelFactory factory = DependencyContainer.getNewsViewModelFactory(getContext());
-        NewsViewModel model = ViewModelProviders.of(this, factory).get(NewsViewModel.class);
-        model.getLatestNews().observe(this, news -> {
+        Log.d(TAG, "onActivityCreated: Setting newsViewModel");
+
+        newsViewModel = ViewModelProviders.of(this, factory).get(NewsViewModel.class);
+        newsViewModel.getLatestNews().observe(this, news -> {
+            Log.d(TAG, "onActivityCreated: Ejecutando observer");
+            swipeRefreshLayout.setRefreshing(false);
             loadList(news);
         });
+        Log.d(TAG, "onActivityCreated: newsViewModel prepared!");
+
+        /*swipeRefreshLayout.post(()->{
+            swipeRefreshLayout.setRefreshing(true);
+            refreshData();
+        });*/
+        //refreshData();
+
     }
 
     void loadList(List<News> news){
         // TODO: Verificar si la lista está vacía
+        swipeRefreshLayout.setRefreshing(true);
         newsArray = news;
         newsAdapter = new NewsAdapter(getContext(), newsArray,this);
         newsRecycler.setAdapter(newsAdapter);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -83,15 +105,18 @@ public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHan
         Intent intent = new Intent(getContext(), NewsDetailActivity.class);
         intent.putExtra("id",mNew.getId());
         startActivity(intent);
-        /*
-        NewsDetailFragment fragment = new NewsDetailFragment();
-        FragmentManager fm = getFragmentManager();
-        fm.beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_down, R.anim.slide_out_down,
-                        R.anim.slide_in_down, R.anim.slide_out_down)
-                .add(R.id.main_container,fragment)
-                .hide(fm.findFragmentByTag("news"))
-                .addToBackStack("detail")
-                .commit();*/
     }
+
+    /**
+     * Called when a swipe gesture triggers a refresh.
+     */
+    @Override
+    public void onRefresh() {
+        swipeRefreshLayout.setRefreshing(true);
+        Log.d(TAG, "onRefresh: Loading data...");
+        newsViewModel.refreshNews();
+        Log.d(TAG, "onRefresh: Finished");
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
 }

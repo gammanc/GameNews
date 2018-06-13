@@ -9,7 +9,7 @@ import com.gamma.gamenews.data.database.News;
 import java.util.List;
 
 public class NewsViewModel extends ViewModel {
-    private final LiveData<List<News>> newsArrayList;
+    private LiveData<List<News>> newsArrayList;
 
     private final DataRepository dataRepository;
 
@@ -20,5 +20,9 @@ public class NewsViewModel extends ViewModel {
 
     public LiveData<List<News>> getLatestNews(){
         return newsArrayList;
+    }
+
+    public void refreshNews(){
+        newsArrayList = dataRepository.getNews();
     }
 }

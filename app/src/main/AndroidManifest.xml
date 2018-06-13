@@ -30,7 +30,7 @@
         <!-- Service for immediate syncs -->
         <service
             android:name=".data.network.SyncIntentService"
-            android:exported="false"></service>
+            android:exported="false"/>
         <service
             android:name=".data.network.AppJobService"
             android:exported="false">

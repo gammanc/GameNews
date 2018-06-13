@@ -137,9 +137,8 @@ public class NetworkDataSource {
         Log.d(TAG, "getUserDetails: Getting user info");
         executors.networkIO().execute(()-> {
             Gson gson = new GsonBuilder().registerTypeAdapter(
-                    ArrayList.class, //lo que devuelve
-                    //String.class,
-                    new UserDeserializer() //lo que transforma
+                    ArrayList.class,
+                    new UserDeserializer()
             ).create();
             Call<ArrayList<String>> call = NetworkUtils.getClientInstanceAuth(gson).getUserDetails();
             call.enqueue(new Callback<ArrayList<String>>() {

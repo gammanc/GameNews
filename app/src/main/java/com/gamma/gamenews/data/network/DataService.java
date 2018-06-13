@@ -23,7 +23,8 @@ public interface DataService {
     @GET("/news")
     Call<ArrayList<News>> getNewsList();
 
-    //TODO: cambiar el tipo de respuesta
     @GET("/users/detail")
     Call<ArrayList<String>> getUserDetails();
+
+
 }

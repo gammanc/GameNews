@@ -26,7 +26,7 @@ public class DataRepository {
 
     private boolean initialized = false;
 
-    public DataRepository(NewsDao newsDao,
+    private DataRepository(NewsDao newsDao,
                           NetworkDataSource networkDataSource,
                           AppExecutors executors) {
         this.newsDao = newsDao;
@@ -37,7 +37,9 @@ public class DataRepository {
         networkDataSource.getUserDetails();
         downloadedNews.observeForever(
                 news -> this.executors.diskIO().execute(() -> {
-                    Log.d(TAG, "DataRepository: inserting into database");
+                    Log.d(TAG, "DataRepository: truncating News table");
+                    newsDao.deleteAll();
+                    Log.d(TAG, "DataRepository: Inserting into database");
                     newsDao.insertNews(news);
 
                 })
@@ -62,7 +64,7 @@ public class DataRepository {
      * */
     private synchronized void initializeData(){
         Log.d(TAG, "initializeData? "+(!initialized?"Yes":"No"));
-        if (initialized) return;
+        //if (initialized) return;
         initialized = true;
         startFetchService();
     }
@@ -88,7 +90,7 @@ public class DataRepository {
         return true;
     }
 
-    private void startFetchService(){
+    public void startFetchService(){
         networkDataSource.startFetchNewsService();
     }
 }
