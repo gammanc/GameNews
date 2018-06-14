@@ -3,6 +3,7 @@ package com.gamma.gamenews.ui.newslist;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import com.gamma.gamenews.data.database.News;
 import com.gamma.gamenews.R;
+import com.gamma.gamenews.utils.SharedPreference;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -20,16 +22,20 @@ import java.util.List;
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder>{
     private Context context;
     private List<News> newsArray;
+    private List<String> favorites;
 
     private final onNewsClickHandler mClickHandler;
     public interface onNewsClickHandler{
         void onNewsClick(News mNew);
+        void onNewsChecked(View v, String id);
     }
 
     public NewsAdapter (Context context, List<News> newsArray, onNewsClickHandler clickHandler) {
         this.context = context;
         this.newsArray = newsArray;
         mClickHandler = clickHandler;
+        Log.d("GN:NewsAdapter", "NewsAdapter: "+SharedPreference.getFavorites().toString());
+        favorites = SharedPreference.getFavorites();
     }
 
      class NewsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -83,6 +89,21 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
                     .into(holder.imgPicture);
         } else
             holder.imgPicture.setImageResource(R.drawable.no_image);
+
+        if(checkFavorite(_new.getId())){
+            holder.btnFav.setImageResource(R.drawable.ic_favorites);
+            holder.btnFav.setTag("y");
+        } else {
+            holder.btnFav.setImageResource(R.drawable.ic_favorite_border);
+            holder.btnFav.setTag("n");
+        }
+
+        holder.btnFav.setOnClickListener(v-> mClickHandler.onNewsChecked(v, _new.getId()));
+
+    }
+
+    private boolean checkFavorite(String id){
+        return favorites.contains(id);
     }
 
     @Override

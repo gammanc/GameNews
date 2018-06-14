@@ -115,41 +115,46 @@ public class SharedPreference {
     private static void saveFavorites (List<String> favs){
         Gson gson = new Gson();
         String jsonFavs = gson.toJson(favs);
-
         editor.putString(FAVS ,jsonFavs);
         editor.commit();
     }
 
     public static ArrayList<String> getFavorites(){
-        SharedPreferences settings;
         List<String> favs;
 
         if(mSharedPref.contains(FAVS)){
             String jsonFavs = read(FAVS, null);
             Gson g = new Gson();
             String[] favItems = g.fromJson(jsonFavs, String[].class);
-
             favs = Arrays.asList(favItems);
             favs = new ArrayList<>(favs);
-        } else return null;
+        } else return new ArrayList<>();
 
         return (ArrayList<String>) favs;
     }
 
     public static void addFavorite(String s){
-        ArrayList<String> favs = getFavorites();
+        List<String> favs = getFavorites();
         if(favs == null) favs = new ArrayList<>();
         favs.add(s);
         saveFavorites(favs);
         Log.d(TAG, "addFavorite: success");
     }
 
+    public static void removeAllFavs(){
+        write(FAVS, "[]");
+    }
+
     public static void removeFavorite(String s){
-        ArrayList<String> favs = getFavorites();
+        List<String> favs = getFavorites();
         if(favs != null) {
             if(favs.remove(s)) Log.d(TAG, "removeFavorite: success");
             saveFavorites(favs);
         }
+    }
+
+    public static boolean checkFavorite(String id){
+        return getFavorites().contains(id);
     }
 }
 

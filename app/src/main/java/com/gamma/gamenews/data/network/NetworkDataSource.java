@@ -5,6 +5,8 @@ import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.Driver;
@@ -14,7 +16,10 @@ import com.firebase.jobdispatcher.Job;
 import com.firebase.jobdispatcher.Lifetime;
 import com.firebase.jobdispatcher.Trigger;
 import com.gamma.gamenews.AppExecutors;
+import com.gamma.gamenews.R;
 import com.gamma.gamenews.data.database.News;
+import com.gamma.gamenews.data.network.deserializer.MessageDeserializer;
+import com.gamma.gamenews.data.network.deserializer.UserDeserializer;
 import com.gamma.gamenews.utils.SharedPreference;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -145,18 +150,108 @@ public class NetworkDataSource {
                 @Override
                 public void onResponse(Call<ArrayList<String>> call, Response<ArrayList<String>> response) {
                     if (response.isSuccessful()){
-                        Log.d(TAG, "onResponse: The response was successful");
+                        Log.d(TAG, "getUserDetail: onResponse: The response was successful");
+                        SharedPreference.removeAllFavs();
+                        Log.d(TAG, "onResponse: old favs deleted");
                         for(String n : response.body()){
                             SharedPreference.addFavorite(n);
                         }
+                    } else {
+                        switch (response.code()){
+                            case 401:
+                                SharedPreference.logOutUser();
+                        }
+                        Log.d(TAG, "getUserDetail: onResponse: The response failed. code "+response.code());
                     }
                 }
 
                 @Override
                 public void onFailure(Call<ArrayList<String>> call, Throwable t) {
-
+                    t.printStackTrace();
+                    Log.d(TAG, "getUserDet: onFailure: the response failed : +"+t.getMessage());
+                    t.printStackTrace();
                 }
             });
         });
+    }
+
+    public void setFavorite(View v, String newid){
+
+        Log.d(TAG, "onNewsChecked: FAV CLICKED");
+        ImageView icon = v.findViewById(R.id.btn_favorite);
+
+        Gson gson = new GsonBuilder().registerTypeAdapter(
+                String.class,
+                new MessageDeserializer()
+        ).create();
+
+        executors.networkIO().execute(()->{
+
+            DataService dataService = NetworkUtils.getClientInstanceAuth(gson);
+
+            if(icon.getTag().toString().equalsIgnoreCase("n")){
+                Call<String> response = dataService.addFavorite(SharedPreference.read(SharedPreference.USER_ID,"null"), newid);
+                response.enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        if (response.isSuccessful()){
+                            Log.d(TAG, "onResponse: Response successful");
+                            String[] data = response.body().split(":");
+                            if (data[0].equalsIgnoreCase("success")){
+                                if(data[1].equalsIgnoreCase("true")){
+                                    SharedPreference.addFavorite(newid);
+                                    icon.setTag("y");
+                                    icon.setImageResource(R.drawable.ic_favorites);
+                                    Log.d(TAG, "onResponse: Favorite saved successfully");
+                                } else if(data[1].equalsIgnoreCase("false")){
+                                    Log.d(TAG, "onResponse: Favorite was not saved");
+                                    Log.d(TAG, "onResponse:"+response.message());
+                                }
+                            }
+                        } else {
+                            Log.d(TAG, "onResponse: Response failed alv - code :"+response.code());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+                        t.printStackTrace();
+                    }
+                });
+            } else {
+                Call<String> response = dataService.deleteFavorite(SharedPreference.read(SharedPreference.USER_ID,"null"), newid);
+                response.enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        if (response.isSuccessful()){
+                            Log.d(TAG, "onResponse: Response successful");
+                            String[] data = response.body().split(":");
+
+                            if (data[0].equalsIgnoreCase("message")){
+
+                                SharedPreference.removeFavorite(newid);
+                                icon.setTag("n");
+                                icon.setImageResource(R.drawable.ic_favorite_border);
+                                Log.d(TAG, "onResponse: Favorite deleted successfully");
+
+                            } else if(data[0].equals("success")) {
+                                if (data[1].equals("false")){
+                                    Log.d(TAG, "onResponse: Favorite was not deleted");
+                                    Log.d(TAG, "onResponse:"+response.message());
+                                }
+                            }
+                        } else {
+                            Log.d(TAG, "onResponse: Response failed alv - code :"+response.code());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+                        t.printStackTrace();
+                    }
+                });
+            }
+        });
+
     }
 }

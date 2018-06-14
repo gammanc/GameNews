@@ -7,18 +7,23 @@ import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.gamma.gamenews.AppExecutors;
 import com.gamma.gamenews.R;
 import com.gamma.gamenews.data.database.News;
+import com.gamma.gamenews.data.network.NetworkDataSource;
 import com.gamma.gamenews.utils.DependencyContainer;
+import com.gamma.gamenews.utils.SharedPreference;
 import com.squareup.picasso.Picasso;
 
 public class NewsDetailActivity extends AppCompatActivity {
 
     ImageView coverImage, btnFavorite;
     TextView txtTitle, txtSubtitle, txtGame, txtBody;
+    String newid;
     CollapsingToolbarLayout collapsingToolbar;
     private static final String TAG = "GN:NewsDetailActivity";
 
@@ -27,10 +32,10 @@ public class NewsDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_detail);
 
-        findViews();
-
         Intent intent = getIntent();
-        String newid = intent.getStringExtra("id");
+        newid = intent.getStringExtra("id");
+
+        findViews();
 
         Log.d(TAG, "onCreate: Getting the ModelFactory");
         DetailViewModelFactory factory = DependencyContainer.getDetailViewModelFactory(this, newid);
@@ -72,6 +77,15 @@ public class NewsDetailActivity extends AppCompatActivity {
             txtBody.setText(mNew.getBody().trim());
         else
             txtBody.setText(getResources().getString(R.string.no_game));
+
+        if(SharedPreference.checkFavorite(newid)){
+            btnFavorite.setTag("y");
+            btnFavorite.setImageResource(R.drawable.ic_favorites);
+        } else {
+            btnFavorite.setTag("n");
+            btnFavorite.setImageResource(R.drawable.ic_favorite_border);
+        }
+
     }
 
     private void findViews(){
@@ -83,6 +97,10 @@ public class NewsDetailActivity extends AppCompatActivity {
         txtBody = findViewById(R.id.txt_body);
         setSupportActionBar(findViewById(R.id.toolbar));
         collapsingToolbar = findViewById(R.id.collapsing_toolbar);
+
+        btnFavorite.setOnClickListener(v -> {
+            NetworkDataSource.getInstance(getApplicationContext(), AppExecutors.getInstance()).setFavorite(v,newid);
+        });
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ViewCompat.setTransitionName(findViewById(R.id.appbar_layout), "transition");

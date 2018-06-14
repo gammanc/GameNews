@@ -34,7 +34,6 @@ public class DataRepository {
         this.executors = executors;
 
         LiveData<ArrayList<News>> downloadedNews = networkDataSource.getCurrentNews();
-        networkDataSource.getUserDetails();
         downloadedNews.observeForever(
                 news -> this.executors.diskIO().execute(() -> {
                     Log.d(TAG, "DataRepository: truncating News table");
@@ -67,12 +66,14 @@ public class DataRepository {
         //if (initialized) return;
         initialized = true;
         startFetchService();
+
+        networkDataSource.getUserDetails();
     }
 
     // Database operations
 
     public LiveData<News> getNewById(String id){
-        initializeData();
+        //initializeData();
         return newsDao.getNewDetail(id);
     }
 

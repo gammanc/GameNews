@@ -1,4 +1,6 @@
-package com.gamma.gamenews.data.network;
+package com.gamma.gamenews.data.network.deserializer;
+
+import android.util.Log;
 
 import com.gamma.gamenews.utils.SharedPreference;
 import com.google.gson.JsonArray;
@@ -24,9 +26,8 @@ public class UserDeserializer implements JsonDeserializer<ArrayList<String>> {
             }
             if(userinfo.has("favoriteNews")){
                 JsonArray news = userinfo.getAsJsonArray("favoriteNews");
-
                 for(JsonElement j:news){
-                    f.add(j.getAsJsonObject().get("_id").getAsString());
+                    f.add(j.getAsString());
                 }
             }
         }

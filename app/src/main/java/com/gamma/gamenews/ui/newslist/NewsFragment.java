@@ -14,21 +14,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.gamma.gamenews.ui.newsdetail.DetailViewModelFactory;
+import com.gamma.gamenews.AppExecutors;
+import com.gamma.gamenews.data.network.NetworkDataSource;
 import com.gamma.gamenews.ui.newsdetail.NewsDetailActivity;
 import com.gamma.gamenews.ui.newsdetail.NewsDetailViewModel;
-import com.gamma.gamenews.ui.newslist.NewsAdapter;
 import com.gamma.gamenews.data.database.News;
 import com.gamma.gamenews.R;
-import com.gamma.gamenews.data.network.NetworkUtils;
 import com.gamma.gamenews.utils.DependencyContainer;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
 public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHandler, SwipeRefreshLayout.OnRefreshListener{
@@ -48,6 +42,11 @@ public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHan
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate: Setting NewsModelFactory");
+        NewsViewModelFactory factory = DependencyContainer.getNewsViewModelFactory(getContext());
+
+        Log.d(TAG, "onCreate: Setting newsViewModel");
+        newsViewModel = ViewModelProviders.of(this, factory).get(NewsViewModel.class);
     }
 
     @Override
@@ -63,41 +62,29 @@ public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHan
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorDivider, R.color.colorAccent);
         swipeRefreshLayout.post(()->{ swipeRefreshLayout.setRefreshing(true); });
-
+        Log.d(TAG, "onCreateView: Activating swipe animation");
         return v;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        Log.d(TAG, "onActivityCreated: Setting NewsModelFactory");
-        NewsViewModelFactory factory = DependencyContainer.getNewsViewModelFactory(getContext());
-        Log.d(TAG, "onActivityCreated: Setting newsViewModel");
-
-        newsViewModel = ViewModelProviders.of(this, factory).get(NewsViewModel.class);
         newsViewModel.getLatestNews().observe(this, news -> {
             Log.d(TAG, "onActivityCreated: Ejecutando observer");
+            Log.d(TAG, "observer: Hiding swipe animation");
             swipeRefreshLayout.setRefreshing(false);
             loadList(news);
         });
         Log.d(TAG, "onActivityCreated: newsViewModel prepared!");
-
-        /*swipeRefreshLayout.post(()->{
-            swipeRefreshLayout.setRefreshing(true);
-            refreshData();
-        });*/
-        //refreshData();
-
     }
 
     void loadList(List<News> news){
         // TODO: Verificar si la lista está vacía
-        swipeRefreshLayout.setRefreshing(true);
         newsArray = news;
         newsAdapter = new NewsAdapter(getContext(), newsArray,this);
         newsRecycler.setAdapter(newsAdapter);
-        swipeRefreshLayout.setRefreshing(false);
+        Log.d(TAG, "loadList: Hiding swipe animation");
+        swipeRefreshLayout.post(()->{ swipeRefreshLayout.setRefreshing(false); });
     }
 
     @Override
@@ -105,6 +92,11 @@ public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHan
         Intent intent = new Intent(getContext(), NewsDetailActivity.class);
         intent.putExtra("id",mNew.getId());
         startActivity(intent);
+    }
+
+    @Override
+    public void onNewsChecked(View v, String newid) {
+        NetworkDataSource.getInstance(this.getContext(), AppExecutors.getInstance()).setFavorite(v,newid);
     }
 
     /**

@@ -9,14 +9,12 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 
 import com.gamma.gamenews.R;
 import com.gamma.gamenews.data.network.DataService;
-import com.gamma.gamenews.data.network.LoginDeserializer;
+import com.gamma.gamenews.data.network.deserializer.MessageDeserializer;
 import com.gamma.gamenews.data.network.NetworkUtils;
-import com.gamma.gamenews.data.network.UserDeserializer;
 import com.gamma.gamenews.utils.SharedPreference;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -25,7 +23,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import br.com.simplepass.loading_button_lib.customViews.CircularProgressButton;
 import retrofit2.Call;
@@ -64,7 +61,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     Gson gson = new GsonBuilder().registerTypeAdapter(
                             String.class, //lo que devuelve
-                            new LoginDeserializer() //lo que transforma
+                            new MessageDeserializer() //lo que transforma
                     ).create();
 
                     btnLogin1.startAnimation();
