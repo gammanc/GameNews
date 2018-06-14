@@ -111,4 +111,13 @@ public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHan
         swipeRefreshLayout.setRefreshing(false);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: Hi");
+        if(newsAdapter != null){
+            Log.d(TAG, "onResume: notifying...");
+            newsAdapter.notifyDataSetChanged();
+        }
+    }
 }
