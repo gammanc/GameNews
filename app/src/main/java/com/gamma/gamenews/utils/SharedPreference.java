@@ -76,7 +76,7 @@ public class SharedPreference {
         return mSharedPref.getInt(key, defValue);
     }
 
-    public static void delete(String key){;
+    public static void delete(String key){
         editor.remove(key);
     }
 
@@ -93,6 +93,8 @@ public class SharedPreference {
             Intent i = new Intent(mContext, LoginActivity.class);
 
             //Close all the activities
+            //TODO: Revisar el modo de cerrar la activity al cerrar sesión por 401
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             mContext.startActivity(i);

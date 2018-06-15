@@ -92,12 +92,7 @@ public class LoginActivity extends AppCompatActivity {
                                         new AlertDialog.Builder(LoginActivity.this)
                                                 .setTitle("Error")
                                                 .setMessage(object.getString("message"))
-                                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        dialog.dismiss();
-                                                    }
-                                                })
+                                                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
                                                 .show();
                                     }
                                 } catch (IOException e) {

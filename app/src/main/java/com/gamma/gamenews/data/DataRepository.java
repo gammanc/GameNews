@@ -65,9 +65,8 @@ public class DataRepository {
         Log.d(TAG, "initializeData? "+(!initialized?"Yes":"No"));
         //if (initialized) return;
         initialized = true;
-        startFetchService();
-
-        networkDataSource.getUserDetails();
+        if(networkDataSource.getUserDetails())
+            startFetchService();
     }
 
     // Database operations

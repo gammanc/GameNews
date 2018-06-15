@@ -27,7 +27,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
     private final onNewsClickHandler mClickHandler;
     public interface onNewsClickHandler{
         void onNewsClick(News mNew);
-        void onNewsChecked(View v, String id);
+        void onNewsChecked(ImageView v, String id);
     }
 
     public NewsAdapter (Context context, List<News> newsArray, onNewsClickHandler clickHandler) {
@@ -98,7 +98,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
             holder.btnFav.setTag("n");
         }
 
-        holder.btnFav.setOnClickListener(v-> mClickHandler.onNewsChecked(v, _new.getId()));
+        holder.btnFav.setOnClickListener(v-> mClickHandler.onNewsChecked(holder.btnFav, _new.getId()));
 
     }
 

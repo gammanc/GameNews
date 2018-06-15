@@ -16,4 +16,11 @@
     <string name="no_title_available">No title available</string>
     <string name="no_description_available">No description available</string>
     <string name="no_game">No Game</string>
+
+    <string name="message_fav_saved">Favorite saved</string>
+    <string name="message_fav_deleted">Favorite deleted</string>
+    <string name="message_session_expired_title">Session lost</string>
+    <string name="message_session_expired">Session has expired. Please login again.</string>
+    <string name="message_no_internet">Unable to connect to internet. Please check your connection</string>
+    <string name="message_net_failure">Unable to complete. Please try again later</string>
 </resources>

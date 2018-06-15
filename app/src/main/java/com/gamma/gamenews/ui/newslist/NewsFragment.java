@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.gamma.gamenews.AppExecutors;
 import com.gamma.gamenews.data.network.NetworkDataSource;
@@ -69,12 +70,14 @@ public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHan
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         newsViewModel.getLatestNews().observe(this, news -> {
             Log.d(TAG, "onActivityCreated: Ejecutando observer");
             Log.d(TAG, "observer: Hiding swipe animation");
             swipeRefreshLayout.setRefreshing(false);
             loadList(news);
         });
+
         Log.d(TAG, "onActivityCreated: newsViewModel prepared!");
     }
 
@@ -95,8 +98,8 @@ public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHan
     }
 
     @Override
-    public void onNewsChecked(View v, String newid) {
-        NetworkDataSource.getInstance(this.getContext(), AppExecutors.getInstance()).setFavorite(v,newid);
+    public void onNewsChecked(ImageView v, String newid) {
+        NetworkDataSource.getInstance(this.getContext(), AppExecutors.getInstance()).setFavorite(v,newid,newsRecycler);
     }
 
     /**
@@ -114,7 +117,6 @@ public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHan
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume: Hi");
         if(newsAdapter != null){
             Log.d(TAG, "onResume: notifying...");
             newsAdapter.notifyDataSetChanged();

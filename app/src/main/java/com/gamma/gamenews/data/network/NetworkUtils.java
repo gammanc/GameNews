@@ -1,5 +1,9 @@
 package com.gamma.gamenews.data.network;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 import com.gamma.gamenews.utils.SharedPreference;
 import com.google.gson.Gson;
 
@@ -59,5 +63,13 @@ public class NetworkUtils {
                     .build();
             return chain.proceed(newRequest);
         }).build();
+    }
+
+    public static boolean checkConectivity(Context context){
+        ConnectivityManager manager =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = manager.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 }

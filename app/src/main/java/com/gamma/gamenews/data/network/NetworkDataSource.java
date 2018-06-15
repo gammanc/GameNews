@@ -4,9 +4,12 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.firebase.jobdispatcher.Constraint;
 import com.firebase.jobdispatcher.Driver;
@@ -138,8 +141,15 @@ public class NetworkDataSource {
         });
     }
 
-    public void getUserDetails(){
+    public boolean getUserDetails(){
         Log.d(TAG, "getUserDetails: Getting user info");
+        if (!NetworkUtils.checkConectivity(context)){
+            Toast.makeText(context,
+                    context.getResources().getText(R.string.message_no_internet),
+                    Toast.LENGTH_LONG).show();
+            return false;
+        }
+        final boolean[] complete = new boolean[1];
         executors.networkIO().execute(()-> {
             Gson gson = new GsonBuilder().registerTypeAdapter(
                     ArrayList.class,
@@ -156,26 +166,35 @@ public class NetworkDataSource {
                         for(String n : response.body()){
                             SharedPreference.addFavorite(n);
                         }
+                        complete[0] = true;
                     } else {
                         switch (response.code()){
                             case 401:
+                                Toast.makeText(context,
+                                        context.getResources().getText(R.string.message_session_expired),
+                                        Toast.LENGTH_LONG).show();
                                 SharedPreference.logOutUser();
                         }
+                        complete[0] = false;
                         Log.d(TAG, "getUserDetail: onResponse: The response failed. code "+response.code());
                     }
                 }
 
                 @Override
                 public void onFailure(Call<ArrayList<String>> call, Throwable t) {
-                    t.printStackTrace();
+                    complete[0] = false;
+                    Toast.makeText(context,
+                            context.getResources().getText(R.string.message_net_failure),
+                            Toast.LENGTH_LONG).show();
                     Log.d(TAG, "getUserDet: onFailure: the response failed : +"+t.getMessage());
                     t.printStackTrace();
                 }
             });
         });
+        return complete[0];
     }
 
-    public void setFavorite(View v, String newid){
+    public void setFavorite(ImageView v, String newid, View rootView){
 
         Log.d(TAG, "onNewsChecked: FAV CLICKED");
         ImageView icon = v.findViewById(R.id.btn_favorite);
@@ -190,12 +209,14 @@ public class NetworkDataSource {
             DataService dataService = NetworkUtils.getClientInstanceAuth(gson);
 
             if(icon.getTag().toString().equalsIgnoreCase("n")){
-                Call<String> response = dataService.addFavorite(SharedPreference.read(SharedPreference.USER_ID,"null"), newid);
+                Call<String> response = dataService.addFavorite(
+                        SharedPreference.read(SharedPreference.USER_ID,"null"), newid);
                 response.enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
                         if (response.isSuccessful()){
                             Log.d(TAG, "onResponse: Response successful");
+
                             String[] data = response.body().split(":");
                             if (data[0].equalsIgnoreCase("success")){
                                 if(data[1].equalsIgnoreCase("true")){
@@ -203,23 +224,33 @@ public class NetworkDataSource {
                                     icon.setTag("y");
                                     icon.setImageResource(R.drawable.ic_favorites);
                                     Log.d(TAG, "onResponse: Favorite saved successfully");
+                                    Snackbar.make(rootView,
+                                            context.getResources().getString(R.string.message_fav_saved),
+                                            Snackbar.LENGTH_SHORT).show();
                                 } else if(data[1].equalsIgnoreCase("false")){
                                     Log.d(TAG, "onResponse: Favorite was not saved");
                                     Log.d(TAG, "onResponse:"+response.message());
                                 }
                             }
                         } else {
+                            Snackbar.make(rootView,
+                                    context.getResources().getString(R.string.message_net_failure),
+                                    Snackbar.LENGTH_SHORT).show();
                             Log.d(TAG, "onResponse: Response failed alv - code :"+response.code());
                         }
                     }
 
                     @Override
                     public void onFailure(Call<String> call, Throwable t) {
+                        Snackbar.make(rootView,
+                                context.getResources().getString(R.string.message_net_failure),
+                                Snackbar.LENGTH_SHORT).show();
                         t.printStackTrace();
                     }
                 });
             } else {
-                Call<String> response = dataService.deleteFavorite(SharedPreference.read(SharedPreference.USER_ID,"null"), newid);
+                Call<String> response = dataService.deleteFavorite(
+                        SharedPreference.read(SharedPreference.USER_ID,"null"), newid);
                 response.enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
@@ -228,14 +259,21 @@ public class NetworkDataSource {
                             String[] data = response.body().split(":");
 
                             if (data[0].equalsIgnoreCase("message")){
-
                                 SharedPreference.removeFavorite(newid);
                                 icon.setTag("n");
                                 icon.setImageResource(R.drawable.ic_favorite_border);
+                                Snackbar.make(rootView,
+                                        context.getResources().getString(R.string.message_fav_deleted),
+                                        Snackbar.LENGTH_SHORT).show();
+
                                 Log.d(TAG, "onResponse: Favorite deleted successfully");
 
                             } else if(data[0].equals("success")) {
                                 if (data[1].equals("false")){
+                                    Snackbar.make(rootView,
+                                            context.getResources().getString(R.string.message_fav_deleted),
+                                            Snackbar.LENGTH_SHORT).show();
+
                                     Log.d(TAG, "onResponse: Favorite was not deleted");
                                     Log.d(TAG, "onResponse:"+response.message());
                                 }

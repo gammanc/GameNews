@@ -99,7 +99,7 @@ public class NewsDetailActivity extends AppCompatActivity {
         collapsingToolbar = findViewById(R.id.collapsing_toolbar);
 
         btnFavorite.setOnClickListener(v -> {
-            NetworkDataSource.getInstance(getApplicationContext(), AppExecutors.getInstance()).setFavorite(v,newid);
+            NetworkDataSource.getInstance(getApplicationContext(), AppExecutors.getInstance()).setFavorite(btnFavorite,newid,collapsingToolbar);
         });
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
