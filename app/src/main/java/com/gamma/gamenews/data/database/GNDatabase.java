@@ -23,6 +23,7 @@ public abstract class GNDatabase extends RoomDatabase{
                 if (instance == null){
                     instance = Room.databaseBuilder(context.getApplicationContext(),
                             GNDatabase.class, GNDatabase.DATABASE_NAME)
+                            .fallbackToDestructiveMigration()
                             .build();
                 }
             }

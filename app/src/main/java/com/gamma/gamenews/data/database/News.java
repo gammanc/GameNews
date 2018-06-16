@@ -8,9 +8,6 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.Date;
 
-/**
- * News entity definition
- */
 @Entity(tableName = "news")
 public class News {
 
@@ -24,6 +21,7 @@ public class News {
     private String coverImage;
     private String description;
     private Date created_date;
+    private boolean favorite;
 
     public News(@NonNull String id, String title, String body, String game,
                 String coverImage, String description, Date created_date) {
@@ -65,4 +63,11 @@ public class News {
         return created_date;
     }
 
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
+    }
 }

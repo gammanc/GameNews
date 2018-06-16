@@ -26,8 +26,8 @@ public interface NewsDao {
     @Query("SELECT * FROM news WHERE id = :newid")
     LiveData<News> getNewDetail(String newid);
 
-    @Insert
-    void bulkInsert(News... weather);
+    @Query("UPDATE news SET favorite = :favorite WHERE id LIKE :id")
+    void updateFavorite(String id, boolean favorite);
 
     @Query("DELETE FROM news")
     void deleteAll();

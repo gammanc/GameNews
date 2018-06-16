@@ -22,7 +22,6 @@ import java.util.List;
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder>{
     private Context context;
     private List<News> newsArray;
-    private List<String> favorites;
 
     private final onNewsClickHandler mClickHandler;
     public interface onNewsClickHandler{
@@ -34,8 +33,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
         this.context = context;
         this.newsArray = newsArray;
         mClickHandler = clickHandler;
-        Log.d("GN:NewsAdapter", "NewsAdapter: "+SharedPreference.getFavorites().toString());
-        favorites = SharedPreference.getFavorites();
     }
 
      class NewsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -90,7 +87,7 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
         } else
             holder.imgPicture.setImageResource(R.drawable.no_image);
 
-        if(checkFavorite(_new.getId())){
+        if(_new.isFavorite()){
             holder.btnFav.setImageResource(R.drawable.ic_favorites);
             holder.btnFav.setTag("y");
         } else {
@@ -100,10 +97,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
 
         holder.btnFav.setOnClickListener(v-> mClickHandler.onNewsChecked(holder.btnFav, _new.getId()));
 
-    }
-
-    private boolean checkFavorite(String id){
-        return favorites.contains(id);
     }
 
     @Override

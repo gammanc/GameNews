@@ -23,6 +23,7 @@ import com.gamma.gamenews.data.database.News;
 import com.gamma.gamenews.R;
 import com.gamma.gamenews.utils.DependencyContainer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -31,7 +32,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHan
     RecyclerView newsRecycler;
     NewsAdapter newsAdapter;
     SwipeRefreshLayout swipeRefreshLayout;
-    List<News> newsArray;
+    List<News> newsArray = new ArrayList<>();
     NewsViewModel newsViewModel;
     NewsDetailViewModel model;
 
@@ -51,8 +52,10 @@ public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHan
         View v = inflater.inflate(R.layout.fragment_news, container, false);
 
         newsRecycler = v.findViewById(R.id.main_recycler);
-        newsRecycler.setHasFixedSize(true);
         newsRecycler.setLayoutManager(new LinearLayoutManager(container.getContext()));
+        newsRecycler.setHasFixedSize(true);
+        newsAdapter = new NewsAdapter(getContext(), newsArray,this);
+        newsRecycler.setAdapter(newsAdapter);
 
         swipeRefreshLayout = v.findViewById(R.id.main_swiperefresh);
         swipeRefreshLayout.setOnRefreshListener(this);
@@ -72,6 +75,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHan
         Log.d(TAG, "onCreate: Setting newsViewModel");
         newsViewModel = ViewModelProviders.of(this, factory).get(NewsViewModel.class);
 
+
         newsViewModel.getLatestNews().observe(this, news -> {
             Log.d(TAG, "onActivityCreated: Ejecutando observer");
             Log.d(TAG, "observer: Hiding swipe animation");
@@ -84,9 +88,10 @@ public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHan
 
     void loadList(List<News> news){
         // TODO: Verificar si la lista está vacía
-        newsArray = news;
-        newsAdapter = new NewsAdapter(getContext(), newsArray,this);
-        newsRecycler.setAdapter(newsAdapter);
+        newsArray.clear();
+        newsArray.addAll(news);
+
+        newsAdapter.notifyDataSetChanged();
         Log.d(TAG, "loadList: Hiding swipe animation");
         swipeRefreshLayout.post(()->{ swipeRefreshLayout.setRefreshing(false); });
     }

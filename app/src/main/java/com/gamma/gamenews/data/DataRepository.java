@@ -43,6 +43,16 @@ public class DataRepository {
 
                 })
         );
+
+        LiveData<String[]> favorites = networkDataSource.getCurrentFavs();
+        favorites.observeForever(
+                favs -> this.executors.diskIO().execute(() ->{
+                    Log.d(TAG, "DataRepository: Updating favorite news");
+                    for (String fav:favs){
+                        newsDao.updateFavorite(fav,true);
+                    }
+                })
+        );
     }
 
     public synchronized static DataRepository getInstance(NewsDao newsDao,
@@ -66,7 +76,6 @@ public class DataRepository {
         //if (initialized) return;
         initialized = true;
         networkDataSource.getUserDetails();
-        //startFetchService();
     }
 
     // Database operations
@@ -81,6 +90,10 @@ public class DataRepository {
         return newsDao.getAll();
     }
 
+    public void updateFavorite(String newid, boolean fav){
+        executors.diskIO().execute(()-> newsDao.updateFavorite(newid,fav));
+    }
+
     //TODO: complete this methods
     private void deleteOldData(){
 
@@ -90,7 +103,7 @@ public class DataRepository {
         return true;
     }
 
-    public void startFetchService(){
+    /*public void startFetchService(){
         networkDataSource.startFetchNewsService();
-    }
+    }*/
 }

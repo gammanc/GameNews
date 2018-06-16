@@ -1,6 +1,7 @@
 package com.gamma.gamenews.data.network;
 
 import com.gamma.gamenews.data.database.News;
+import com.gamma.gamenews.data.network.deserializer.User;
 
 import java.util.ArrayList;
 
@@ -27,7 +28,7 @@ public interface DataService {
     Call<ArrayList<News>> getNewsList();
 
     @GET("/users/detail")
-    Call<ArrayList<String>> getUserDetails();
+    Call<User> getUserDetails();
 
     @POST("/users/{userid}/fav")
     @FormUrlEncoded

@@ -78,7 +78,7 @@ public class NewsDetailActivity extends AppCompatActivity {
         else
             txtBody.setText(getResources().getString(R.string.no_game));
 
-        if(SharedPreference.checkFavorite(newid)){
+        if(mNew.isFavorite()){
             btnFavorite.setTag("y");
             btnFavorite.setImageResource(R.drawable.ic_favorites);
         } else {

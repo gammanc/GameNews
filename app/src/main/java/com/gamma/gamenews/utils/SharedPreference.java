@@ -30,7 +30,7 @@ public class SharedPreference {
     private static SharedPreferences.Editor editor;
     private static Context mContext;
 
-    public static final String IS_LOGGED_IN = "islogged";
+    private static final String IS_LOGGED_IN = "islogged";
     public static final String KEY_NAME = "username";
     public static final String TOKEN = "token";
     public static final String USER_ID = "userid";
@@ -55,7 +55,7 @@ public class SharedPreference {
         editor.commit();
     }
 
-    public static void write(String key, boolean value) {
+    private static void write(String key, boolean value) {
         editor.putBoolean(key, value);
         editor.commit();
     }
@@ -68,7 +68,7 @@ public class SharedPreference {
         return mSharedPref.getString(key, defValue);
     }
 
-    public static boolean read(String key, boolean defValue) {
+    private static boolean read(String key, boolean defValue) {
         return mSharedPref.getBoolean(key, defValue);
     }
 
@@ -108,54 +108,8 @@ public class SharedPreference {
         checkLogin();
     }
 
-    public static boolean isLoggedIn(){
+    private static boolean isLoggedIn(){
         return read(IS_LOGGED_IN,false);
-    }
-
-    /*Favorites*/
-    private static void saveFavorites (List<String> favs){
-        Gson gson = new Gson();
-        String jsonFavs = gson.toJson(favs);
-        editor.putString(FAVS ,jsonFavs);
-        editor.commit();
-    }
-
-    public static ArrayList<String> getFavorites(){
-        List<String> favs;
-
-        if(mSharedPref.contains(FAVS)){
-            String jsonFavs = read(FAVS, null);
-            Gson g = new Gson();
-            String[] favItems = g.fromJson(jsonFavs, String[].class);
-            favs = Arrays.asList(favItems);
-            favs = new ArrayList<>(favs);
-        } else return new ArrayList<>();
-
-        return (ArrayList<String>) favs;
-    }
-
-    public static void addFavorite(String s){
-        List<String> favs = getFavorites();
-        if(favs == null) favs = new ArrayList<>();
-        favs.add(s);
-        saveFavorites(favs);
-        Log.d(TAG, "addFavorite: success");
-    }
-
-    public static void removeAllFavs(){
-        write(FAVS, "[]");
-    }
-
-    public static void removeFavorite(String s){
-        List<String> favs = getFavorites();
-        if(favs != null) {
-            if(favs.remove(s)) Log.d(TAG, "removeFavorite: success");
-            saveFavorites(favs);
-        }
-    }
-
-    public static boolean checkFavorite(String id){
-        return getFavorites().contains(id);
     }
 }
 
