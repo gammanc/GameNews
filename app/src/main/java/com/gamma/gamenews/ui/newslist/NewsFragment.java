@@ -43,11 +43,6 @@ public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHan
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate: Setting NewsModelFactory");
-        NewsViewModelFactory factory = DependencyContainer.getNewsViewModelFactory(getContext());
-
-        Log.d(TAG, "onCreate: Setting newsViewModel");
-        newsViewModel = ViewModelProviders.of(this, factory).get(NewsViewModel.class);
     }
 
     @Override
@@ -70,6 +65,12 @@ public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHan
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        Log.d(TAG, "onCreate: Setting NewsModelFactory");
+        NewsViewModelFactory factory = DependencyContainer.getNewsViewModelFactory(getContext());
+
+        Log.d(TAG, "onCreate: Setting newsViewModel");
+        newsViewModel = ViewModelProviders.of(this, factory).get(NewsViewModel.class);
 
         newsViewModel.getLatestNews().observe(this, news -> {
             Log.d(TAG, "onActivityCreated: Ejecutando observer");

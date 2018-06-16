@@ -65,8 +65,8 @@ public class DataRepository {
         Log.d(TAG, "initializeData? "+(!initialized?"Yes":"No"));
         //if (initialized) return;
         initialized = true;
-        if(networkDataSource.getUserDetails())
-            startFetchService();
+        networkDataSource.getUserDetails();
+        //startFetchService();
     }
 
     // Database operations
@@ -76,7 +76,7 @@ public class DataRepository {
         return newsDao.getNewDetail(id);
     }
 
-    public LiveData<List<News>> getNews(){
+    public LiveData<List<News>>getNews(){
         initializeData();
         return newsDao.getAll();
     }

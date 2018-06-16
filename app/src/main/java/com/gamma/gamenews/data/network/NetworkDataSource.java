@@ -141,15 +141,13 @@ public class NetworkDataSource {
         });
     }
 
-    public boolean getUserDetails(){
+    public void getUserDetails(){
         Log.d(TAG, "getUserDetails: Getting user info");
         if (!NetworkUtils.checkConectivity(context)){
             Toast.makeText(context,
                     context.getResources().getText(R.string.message_no_internet),
                     Toast.LENGTH_LONG).show();
-            return false;
         }
-        final boolean[] complete = new boolean[1];
         executors.networkIO().execute(()-> {
             Gson gson = new GsonBuilder().registerTypeAdapter(
                     ArrayList.class,
@@ -166,7 +164,7 @@ public class NetworkDataSource {
                         for(String n : response.body()){
                             SharedPreference.addFavorite(n);
                         }
-                        complete[0] = true;
+                        startFetchNewsService();
                     } else {
                         switch (response.code()){
                             case 401:
@@ -175,14 +173,12 @@ public class NetworkDataSource {
                                         Toast.LENGTH_LONG).show();
                                 SharedPreference.logOutUser();
                         }
-                        complete[0] = false;
                         Log.d(TAG, "getUserDetail: onResponse: The response failed. code "+response.code());
                     }
                 }
 
                 @Override
                 public void onFailure(Call<ArrayList<String>> call, Throwable t) {
-                    complete[0] = false;
                     Toast.makeText(context,
                             context.getResources().getText(R.string.message_net_failure),
                             Toast.LENGTH_LONG).show();
@@ -191,7 +187,6 @@ public class NetworkDataSource {
                 }
             });
         });
-        return complete[0];
     }
 
     public void setFavorite(ImageView v, String newid, View rootView){

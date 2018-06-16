@@ -36,7 +36,12 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         SharedPreference.init(getApplicationContext());
-        if(SharedPreference.checkLogin()) finish();
+        Log.d(TAG, "onCreate: Checking login");
+        if(SharedPreference.checkLogin()){
+            finishAffinity();
+            //finish();
+            Log.d(TAG, "onCreate: No login");
+        }
         findViews();
 
         fragmentManager = getSupportFragmentManager();

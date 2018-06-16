@@ -93,10 +93,9 @@ public class SharedPreference {
             Intent i = new Intent(mContext, LoginActivity.class);
 
             //Close all the activities
-            //TODO: Revisar el modo de cerrar la activity al cerrar sesión por 401
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+
             mContext.startActivity(i);
             return true;
         }
