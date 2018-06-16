@@ -69,19 +69,30 @@ public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHan
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        Bundle args = getArguments();
+        int type = args.getInt("type");
+
         Log.d(TAG, "onCreate: Setting NewsModelFactory");
         NewsViewModelFactory factory = DependencyContainer.getNewsViewModelFactory(getContext());
 
         Log.d(TAG, "onCreate: Setting newsViewModel");
         newsViewModel = ViewModelProviders.of(this, factory).get(NewsViewModel.class);
 
-
-        newsViewModel.getLatestNews().observe(this, news -> {
-            Log.d(TAG, "onActivityCreated: Ejecutando observer");
-            Log.d(TAG, "observer: Hiding swipe animation");
-            swipeRefreshLayout.setRefreshing(false);
-            loadList(news);
-        });
+        if(type == 2){
+            newsViewModel.getFavNews().observe(this, news -> {
+                Log.d(TAG, "onActivityCreated: Ejecutando observer");
+                Log.d(TAG, "observer: Hiding swipe animation");
+                swipeRefreshLayout.setRefreshing(false);
+                loadList(news);
+            });
+        } else {
+            newsViewModel.getLatestNews().observe(this, news -> {
+                Log.d(TAG, "onActivityCreated: Ejecutando observer");
+                Log.d(TAG, "observer: Hiding swipe animation");
+                swipeRefreshLayout.setRefreshing(false);
+                loadList(news);
+            });
+        }
 
         Log.d(TAG, "onActivityCreated: newsViewModel prepared!");
     }

@@ -7,9 +7,13 @@
         android:id="@+id/group1"
         android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/nav_news"
             android:icon="@drawable/ic_news"
             android:title="Noticias" />
+        <item
+            android:id="@+id/nav_favs"
+            android:icon="@drawable/ic_favorites"
+            android:title="Favoritos" />
     </group>
 
     <item android:title="Juegos">

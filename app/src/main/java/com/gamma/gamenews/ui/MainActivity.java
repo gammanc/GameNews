@@ -53,7 +53,10 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         } else {
+            Bundle args = new Bundle();
+            args.putInt("type",1);
             NewsFragment newsFragment = new NewsFragment();
+            newsFragment.setArguments(args);
             setTitle(R.string.app_name);
             switchContent(newsFragment,"news");
         }
@@ -97,6 +100,10 @@ public class MainActivity extends AppCompatActivity
     public void navigate(){
         if (fragmentManager.getBackStackEntryCount() > 0) {
             super.onBackPressed();
+            if(getSupportActionBar()!=null &&
+                    fragmentManager.getBackStackEntryCount() == 1 &&
+                    !getSupportActionBar().getTitle().equals(getResources().getString(R.string.app_name)))
+                setTitle(R.string.app_name);
         } else if (contentFragment instanceof NewsFragment
                 || fragmentManager.getBackStackEntryCount() == 0) {
             finish();
@@ -111,6 +118,11 @@ public class MainActivity extends AppCompatActivity
             //transaction.setCustomAnimations(R.anim.slide_in_down, R.anim.slide_out_up,
               //      R.anim.slide_in_down, R.anim.slide_out_up);
             transaction.replace(R.id.main_container, fragment, tag);
+
+            if(fragment instanceof  NewsFragment &&
+                    fragment.getArguments().getInt("type")==2){
+                transaction.addToBackStack(tag);
+            }
 
             if(!(fragment instanceof NewsFragment)){
                 transaction.addToBackStack(tag);
@@ -145,12 +157,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             SharedPreference.logOutUser();
             finish();
@@ -162,14 +170,29 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
+        Bundle args = new Bundle();
         switch(id){
+            case R.id.nav_news:
+                args.putInt("type",1);
+                NewsFragment newsFragment = new NewsFragment();
+                newsFragment.setArguments(args);
+                setTitle(R.string.app_name);
+                switchContent(newsFragment,"news");
+                break;
+            case R.id.nav_favs:
+                args.putInt("type",2);
+                NewsFragment favNewsFragment = new NewsFragment();
+                favNewsFragment.setArguments(args);
+                setTitle(R.string.favorites);
+                switchContent(favNewsFragment,"favnews");
+                break;
             case R.id.item_logout:
                 SharedPreference.logOutUser();
                 finish();
+                break;
             default:
-                ;
+                break;
         }
 
         /*if (id == R.id.nav_camera) {

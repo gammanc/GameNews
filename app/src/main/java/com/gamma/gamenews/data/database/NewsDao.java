@@ -23,6 +23,9 @@ public interface NewsDao {
     @Query("SELECT * FROM news ORDER BY created_date DESC")
     LiveData<List<News>> getAll();
 
+    @Query("SELECT * FROM news WHERE favorite = 1 ORDER BY created_date DESC")
+    LiveData<List<News>> getAllFavs();
+
     @Query("SELECT * FROM news WHERE id = :newid")
     LiveData<News> getNewDetail(String newid);
 

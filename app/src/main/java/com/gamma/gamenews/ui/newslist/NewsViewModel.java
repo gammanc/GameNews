@@ -15,14 +15,22 @@ public class NewsViewModel extends ViewModel {
 
     public NewsViewModel(DataRepository repository){
         dataRepository = repository;
-        newsArrayList = dataRepository.getNews();
+        //newsArrayList = dataRepository.getNews();
     }
 
     public LiveData<List<News>> getLatestNews(){
+        newsArrayList = dataRepository.getNews();
+        return newsArrayList;
+    }
+
+    public LiveData<List<News>> getFavNews(){
+        newsArrayList = dataRepository.getFavNews();
         return newsArrayList;
     }
 
     public void refreshNews(){
         newsArrayList = dataRepository.getNews();
     }
+
+    public void refreshFavsNews() { newsArrayList = dataRepository.getFavNews(); }
 }

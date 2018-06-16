@@ -90,6 +90,11 @@ public class DataRepository {
         return newsDao.getAll();
     }
 
+    public LiveData<List<News>>getFavNews(){
+        //initializeData();
+        return newsDao.getAllFavs();
+    }
+
     public void updateFavorite(String newid, boolean fav){
         executors.diskIO().execute(()-> newsDao.updateFavorite(newid,fav));
     }
