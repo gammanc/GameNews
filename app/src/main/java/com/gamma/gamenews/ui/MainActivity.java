@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity
     private Fragment contentFragment;
     private FragmentManager fragmentManager;
     TextView lblUser, lblToken;
+    NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,13 +77,10 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        fab.setOnClickListener(view ->
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+                .setAction("Action", null).show()
+        );
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -90,9 +88,9 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
+        navigationView.setCheckedItem(R.id.nav_news);
         lblUser = navigationView.getHeaderView(0).findViewById(R.id.lblUser);
         lblUser.setText(SharedPreference.read(SharedPreference.KEY_NAME,null));
     }
@@ -101,9 +99,10 @@ public class MainActivity extends AppCompatActivity
         if (fragmentManager.getBackStackEntryCount() > 0) {
             super.onBackPressed();
             if(getSupportActionBar()!=null &&
-                    fragmentManager.getBackStackEntryCount() == 1 &&
-                    !getSupportActionBar().getTitle().equals(getResources().getString(R.string.app_name)))
+                    !getSupportActionBar().getTitle().equals(getResources().getString(R.string.app_name))){
                 setTitle(R.string.app_name);
+                navigationView.setCheckedItem(R.id.nav_news);
+            }
         } else if (contentFragment instanceof NewsFragment
                 || fragmentManager.getBackStackEntryCount() == 0) {
             finish();
