@@ -48,69 +48,66 @@ public class LoginActivity extends AppCompatActivity {
         txtPassword = findViewById(R.id.txt_password);
         btnLogin1 = findViewById(R.id.btnLogin);
 
-        btnLogin1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                final String user = txtUser.getText().toString();
-                final String pass = txtPassword.getText().toString();
+        btnLogin1.setOnClickListener(v -> {
+            final String user = txtUser.getText().toString();
+            final String pass = txtPassword.getText().toString();
 
-                if(user.trim().length() == 0) txtUser.setError("User is required");
-                if(pass.trim().length() == 0) txtPassword.setError("Password is required");
+            if(user.trim().length() == 0) txtUser.setError("User is required");
+            if(pass.trim().length() == 0) txtPassword.setError("Password is required");
 
-                if(user.trim().length() >0 && pass.trim().length()>0){
+            if(user.trim().length() >0 && pass.trim().length()>0){
 
-                    Gson gson = new GsonBuilder().registerTypeAdapter(
-                            String.class, //lo que devuelve
-                            new MessageDeserializer() //lo que transforma
-                    ).create();
+                Gson gson = new GsonBuilder().registerTypeAdapter(
+                        String.class,
+                        new MessageDeserializer()
+                ).create();
 
-                    btnLogin1.startAnimation();
+                btnLogin1.startAnimation();
 
-                    DataService loginService = NetworkUtils.getClientInstance(gson);
-                    Call<String> login = loginService.login(user,pass);
+                DataService loginService = NetworkUtils.getClientInstance(gson);
+                Call<String> login = loginService.login(user,pass);
 
-                    login.enqueue(new Callback<String>() {
-                        @Override
-                        public void onResponse(Call<String> call, Response<String> response) {
-                            if (response.isSuccessful()){
-                                String[] data = response.body().split(":");
-                                if (data[0].equals("token")) {
-                                    SharedPreference.logInUser(user, data[1]);
+                login.enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        if (response.isSuccessful()){
+                            String[] data = response.body().split(":");
+                            if (data[0].equals("token")) {
+                                SharedPreference.logInUser(user, data[1]);
 
-                                    btnLogin1.doneLoadingAnimation(Color.parseColor("#6200ea")
-                                            , BitmapFactory.decodeResource(getResources(), R.drawable.ic_done_white_48dp));
-                                    Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                                    startActivity(i);
-                                    finish();
+                                btnLogin1.doneLoadingAnimation(Color.parseColor("#6200ea")
+                                        , BitmapFactory.decodeResource(getResources(), R.drawable.ic_done_white_48dp));
+                                Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                                startActivity(i);
+                                finish();
+                            }
+                        } else {
+                            btnLogin1.revertAnimation();
+                            try {
+                                if(response.errorBody()!=null){
+                                    String error = response.errorBody().string();
+                                    JSONObject object = new JSONObject(error);
+                                    new AlertDialog.Builder(LoginActivity.this)
+                                            .setTitle("Error")
+                                            .setMessage(object.getString("message"))
+                                            .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                                            .show();
                                 }
-                            } else {
-                                btnLogin1.revertAnimation();
-                                try {
-                                    if(response.errorBody()!=null){
-                                        String error = response.errorBody().string();
-                                        JSONObject object = new JSONObject(error);
-                                        new AlertDialog.Builder(LoginActivity.this)
-                                                .setTitle("Error")
-                                                .setMessage(object.getString("message"))
-                                                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                                                .show();
-                                    }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
                         }
+                    }
 
-                        @Override
-                        public void onFailure(Call<String> call, Throwable t) {
-                            t.printStackTrace();
-                            btnLogin1.revertAnimation();
-                            Snackbar.make(v,"Login failed. Try again later.",Snackbar.LENGTH_LONG).show();
-                        }
-                    });
-                }
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+                        t.printStackTrace();
+                        btnLogin1.revertAnimation();
+                        Snackbar.make(v,"Login failed. Try again later.",Snackbar.LENGTH_LONG).show();
+                    }
+                });
             }
         });
     }

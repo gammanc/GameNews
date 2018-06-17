@@ -16,21 +16,10 @@
             android:title="Favoritos" />
     </group>
 
-    <item android:title="Juegos">
-        <menu android:id="@+id/menu1">
-            <item
-                android:id="@+id/item_lol"
-                android:icon="@drawable/ic_game"
-                android:title="League of Legends" />
-            <item
-                android:id="@+id/item_dota"
-                android:icon="@drawable/ic_game"
-                android:title="Dota" />
-            <item
-                android:id="@+id/item_csgo"
-                android:icon="@drawable/ic_game"
-                android:title="CS GO" />
-        </menu>
+    <item
+        android:id="@+id/submenu_games"
+        android:title="Juegos">
+        <menu />
     </item>
 
     <item android:title="Configuración">

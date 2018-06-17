@@ -42,15 +42,7 @@ import retrofit2.Response;
  * */
 public class NetworkDataSource {
 
-    //Number of days we want API to return
-    public static final int NUM_DAYS = 14;
     private static final String TAG = "GN:NetworkDataSorce";
-
-    //Setting intervals to do sync
-    private static final int SYNC_INTERVAL_HOURS = 3;
-    private static final int SYNC_INTERVAL_SECONDS = (int) TimeUnit.HOURS.toSeconds(SYNC_INTERVAL_HOURS);
-    private static final int SYNC_FLEXTIME_SECONDS = SYNC_INTERVAL_SECONDS / 3;
-    private static final String GAMENEWS_SYNC_TAG = "GameNews-sync";
 
     private static final Object LOCK = new Object();
     private static NetworkDataSource mInstance;
@@ -61,11 +53,14 @@ public class NetworkDataSource {
     private final MutableLiveData<ArrayList<News>> newsArray;
     private final MutableLiveData<String[]> favorites;
 
+    private final MutableLiveData<String[]> games;
+
     private NetworkDataSource(Context context, AppExecutors executors) {
         this.context = context;
         this.executors = executors;
         newsArray = new MutableLiveData<>();
         favorites = new MutableLiveData<>();
+        games = new MutableLiveData<>();
     }
 
     /**
@@ -81,30 +76,6 @@ public class NetworkDataSource {
         return mInstance;
     }
 
-
-    /**
-     * Do a recurring job service which fetches latest info
-     */
-    public void schedulePeriodicSync(){
-        Driver driver = new GooglePlayDriver(context);
-        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(driver);
-
-        //Creating the Job periodically sync the app data
-        Job syncAppJob = dispatcher.newJobBuilder()
-                .setService(AppJobService.class)
-                .setTag(GAMENEWS_SYNC_TAG)
-                .setConstraints(Constraint.ON_ANY_NETWORK)
-                .setLifetime(Lifetime.FOREVER)
-                .setRecurring(true)
-                .setTrigger(Trigger.executionWindow(
-                        SYNC_INTERVAL_SECONDS,
-                        SYNC_INTERVAL_SECONDS + SYNC_FLEXTIME_SECONDS))
-                .setReplaceCurrent(true)
-                .build();
-        dispatcher.schedule(syncAppJob);
-        Log.d(TAG, "schedulePeriodicSync: Job scheduled and ready to sync");
-    }
-
     public LiveData<ArrayList<News>> getCurrentNews(){
         return newsArray;
     }
@@ -112,6 +83,8 @@ public class NetworkDataSource {
     public LiveData<String[]> getCurrentFavs(){
         return favorites;
     }
+
+    public LiveData<String[]> getGames(){ return games;}
 
     /**
      * Starts an intent service to fetch the news.
@@ -153,13 +126,9 @@ public class NetworkDataSource {
         });
     }
 
-    public void getUserDetails(){
-        Log.d(TAG, "getUserDetails: Getting user info");
-        if (!NetworkUtils.checkConectivity(context)){
-            Toast.makeText(context,
-                    context.getResources().getText(R.string.message_no_internet),
-                    Toast.LENGTH_LONG).show();
-        }
+    public void fetchUserDetails(){
+        Log.d(TAG, "fetchUserDetails: fetching user info");
+        if(checkConnection()) return;
         executors.networkIO().execute(()-> {
             Call<User> call = NetworkUtils.getClientInstanceAuth().getUserDetails();
 
@@ -186,14 +155,45 @@ public class NetworkDataSource {
 
                 @Override
                 public void onFailure(@NonNull Call<User> call,@NonNull  Throwable t) {
-                    Toast.makeText(context,
-                            context.getResources().getText(R.string.message_net_failure),
-                            Toast.LENGTH_LONG).show();
-                    Log.d(TAG, "getUserDet: onFailure: the response failed : +"+t.getMessage());
-                    t.printStackTrace();
+                    showError(t);
                 }
             });
         });
+    }
+
+    //TODO: FETCH GAMES LIST
+    public void fetchGames(){
+        Log.d(TAG, "fetchUserDetails: fetching games...");
+        if (checkConnection()) return;
+        executors.networkIO().execute(()->{
+            Call<String[]> call = NetworkUtils.getClientInstanceAuth().getGames();
+            call.enqueue(new Callback<String[]>() {
+                @Override
+                public void onResponse(@NonNull Call<String[]> call,
+                                       @NonNull Response<String[]> response) {
+                    if (response.isSuccessful()){
+                        games.postValue(response.body());
+                        Log.d(TAG, "onResponse: Games fetching successful!");
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<String[]> call,
+                                      @NonNull Throwable t) {
+                    showError(t);
+                }
+            });
+        });
+    }
+
+    private boolean checkConnection(){
+        if (!NetworkUtils.checkConectivity(context)){
+            Toast.makeText(context,
+                    context.getResources().getText(R.string.message_no_internet),
+                    Toast.LENGTH_LONG).show();
+            return true;
+        }
+        return false;
     }
 
     public void setFavorite(ImageView v, String newid, View rootView){
@@ -305,5 +305,13 @@ public class NetworkDataSource {
             }
         });
 
+    }
+
+    public void showError(Throwable t){
+        Toast.makeText(context,
+                context.getResources().getText(R.string.message_net_failure),
+                Toast.LENGTH_LONG).show();
+        Log.d(TAG, "getUserDet: onFailure: the response failed : +"+t.getMessage());
+        t.printStackTrace();
     }
 }

@@ -9,7 +9,7 @@ import android.content.Context;
 /**
  * Principal instance of database
  */
-@Database(entities = {News.class}, version = 1)
+@Database(entities = {News.class, Player.class}, version = 1)
 @TypeConverters(DateConverter.class)
 public abstract class GNDatabase extends RoomDatabase{
     private static final String DATABASE_NAME = "game_news_db";
@@ -32,4 +32,5 @@ public abstract class GNDatabase extends RoomDatabase{
     }
 
     public abstract NewsDao newsDao();
+    public abstract PlayerDao playerDao();
 }

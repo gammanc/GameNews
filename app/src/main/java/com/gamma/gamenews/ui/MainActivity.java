@@ -1,6 +1,7 @@
 package com.gamma.gamenews.ui;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -15,12 +16,23 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.gamma.gamenews.R;
+import com.gamma.gamenews.data.network.DataService;
+import com.gamma.gamenews.data.network.NetworkDataSource;
+import com.gamma.gamenews.data.network.NetworkUtils;
+import com.gamma.gamenews.ui.gameinfo.GamesFragment;
 import com.gamma.gamenews.ui.newslist.NewsFragment;
+import com.gamma.gamenews.utils.DependencyContainer;
 import com.gamma.gamenews.utils.SharedPreference;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -93,6 +105,30 @@ public class MainActivity extends AppCompatActivity
         navigationView.setCheckedItem(R.id.nav_news);
         lblUser = navigationView.getHeaderView(0).findViewById(R.id.lblUser);
         lblUser.setText(SharedPreference.read(SharedPreference.KEY_NAME,null));
+
+        loadGames();
+        loadGameOptions(SharedPreference.getGames());
+    }
+
+    void loadGames(){
+        DataService dataService = NetworkUtils.getClientInstanceAuth();
+        Call<String[]> games = dataService.getGames();
+        games.enqueue(new Callback<String[]>() {
+            @Override
+            public void onResponse(@NonNull Call<String[]> call,
+                                   @NonNull Response<String[]> response) {
+                if (response.isSuccessful()){
+                    SharedPreference.setGames(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<String[]> call,
+                                  @NonNull Throwable t) {
+                Log.d(TAG, "getUserDet: onFailure: the response failed : +"+t.getMessage());
+                t.printStackTrace();
+            }
+        });
     }
 
     public void navigate(){
@@ -168,7 +204,7 @@ public class MainActivity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         Bundle args = new Bundle();
         switch(id){
@@ -191,25 +227,29 @@ public class MainActivity extends AppCompatActivity
                 finish();
                 break;
             default:
+                args.putString("game",item.getTitle().toString());
+                GamesFragment gamesFragment = new GamesFragment();
+                gamesFragment.setArguments(args);
+                setTitle(R.string.app_name);
+                switchContent(gamesFragment,"gamenews");
                 break;
         }
 
-        /*if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }*/
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void loadGameOptions(String[] categories) {
+        MenuItem item = navigationView.getMenu().findItem(R.id.submenu_games);
+        SubMenu games = item.getSubMenu();
+        games.clear();
+        //int count = 1000;
+        for (String category : categories) {
+            games.add(category).setIcon(R.drawable.ic_game).setCheckable(true);
+            //games.add(1, count, count, category).setIcon(R.drawable.ic_game).setCheckable(true);
+            //count++;
+        }
+        games.setGroupCheckable(1, true, true);
     }
 }

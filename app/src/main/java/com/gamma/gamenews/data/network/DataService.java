@@ -27,6 +27,9 @@ public interface DataService {
     @GET("/news")
     Call<ArrayList<News>> getNewsList();
 
+    @GET("/news/type/list")
+    Call<String[]> getGames();
+
     @GET("/users/detail")
     Call<User> getUserDetails();
 

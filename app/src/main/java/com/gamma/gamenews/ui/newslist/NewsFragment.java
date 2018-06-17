@@ -27,14 +27,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHandler, SwipeRefreshLayout.OnRefreshListener{
+public class NewsFragment extends Fragment implements
+        NewsAdapter.onNewsClickHandler, SwipeRefreshLayout.OnRefreshListener{
 
     RecyclerView newsRecycler;
     NewsAdapter newsAdapter;
     SwipeRefreshLayout swipeRefreshLayout;
     List<News> newsArray = new ArrayList<>();
     NewsViewModel newsViewModel;
-    NewsDetailViewModel model;
 
     private static final String TAG = "GN:NewsFragment";
 
@@ -60,7 +60,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHan
         swipeRefreshLayout = v.findViewById(R.id.main_swiperefresh);
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorDivider, R.color.colorAccent);
-        swipeRefreshLayout.post(()->{ swipeRefreshLayout.setRefreshing(true); });
+        swipeRefreshLayout.setRefreshing(true);
         Log.d(TAG, "onCreateView: Activating swipe animation");
         return v;
     }
@@ -78,20 +78,26 @@ public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHan
         Log.d(TAG, "onCreate: Setting newsViewModel");
         newsViewModel = ViewModelProviders.of(this, factory).get(NewsViewModel.class);
 
-        if(type == 2){
-            newsViewModel.getFavNews().observe(this, news -> {
-                Log.d(TAG, "onActivityCreated: Ejecutando observer");
-                Log.d(TAG, "observer: Hiding swipe animation");
-                swipeRefreshLayout.setRefreshing(false);
-                loadList(news);
-            });
-        } else {
-            newsViewModel.getLatestNews().observe(this, news -> {
-                Log.d(TAG, "onActivityCreated: Ejecutando observer");
-                Log.d(TAG, "observer: Hiding swipe animation");
-                swipeRefreshLayout.setRefreshing(false);
-                loadList(news);
-            });
+        switch (type){
+            case 1: //for all the news
+                newsViewModel.getLatestNews().observe(this, news -> {
+                    swipeRefreshLayout.setRefreshing(false);
+                    loadList(news);
+                });
+                break;
+            case 2: //for favorite news
+                newsViewModel.getFavNews().observe(this, news -> {
+                    swipeRefreshLayout.setRefreshing(false);
+                    loadList(news);
+                });
+                break;
+            case 3: //for filter by game
+                String game = args.getString("game");
+                Log.d(TAG, "onActivityCreated: Case 3, game:"+game);
+                newsViewModel.getNewsByGame(game).observe(this, news->{
+                    swipeRefreshLayout.setRefreshing(false);
+                    loadList(news);
+                });
         }
 
         Log.d(TAG, "onActivityCreated: newsViewModel prepared!");
@@ -104,7 +110,7 @@ public class NewsFragment extends Fragment implements NewsAdapter.onNewsClickHan
 
         newsAdapter.notifyDataSetChanged();
         Log.d(TAG, "loadList: Hiding swipe animation");
-        swipeRefreshLayout.post(()->{ swipeRefreshLayout.setRefreshing(false); });
+        swipeRefreshLayout.post(()-> swipeRefreshLayout.setRefreshing(false));
     }
 
     @Override

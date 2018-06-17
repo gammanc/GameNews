@@ -3,6 +3,7 @@ package com.gamma.gamenews.utils;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.gamma.gamenews.ui.LoginActivity;
@@ -34,6 +35,7 @@ public class SharedPreference {
     public static final String KEY_NAME = "username";
     public static final String TOKEN = "token";
     public static final String USER_ID = "userid";
+    public static final String GAMES = "games";
     public static final String FAVS = "favorites";
 
     private static final String TAG = "GN:SharedPreference";
@@ -78,6 +80,20 @@ public class SharedPreference {
 
     public static void delete(String key){
         editor.remove(key);
+    }
+
+    public static void setGames(String[] games){
+        String allgames = TextUtils.join(",",games);
+        Log.d(TAG, "setGames: "+allgames);
+        write(GAMES, allgames);
+    }
+
+    public static String[] getGames(){
+        return read(GAMES,"").split(",");
+    }
+
+    public boolean hasGames(){
+        return !read(GAMES, "").isEmpty();
     }
 
     /* Session related functions */

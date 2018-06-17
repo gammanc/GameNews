@@ -40,7 +40,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
         TextView txtTitle, txtSubtitle;
         ImageView imgPicture, btnFav;
 
-
         public NewsViewHolder(View itemView) {
             super(itemView);
             card = itemView.findViewById(R.id.maincard);

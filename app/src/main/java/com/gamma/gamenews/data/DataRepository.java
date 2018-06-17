@@ -61,7 +61,7 @@ public class DataRepository {
         Log.d(TAG, "getInstance: Providing Repository");
         if(instance == null){
             synchronized (LOCK){
-                instance = new DataRepository(newsDao, networkDataSource, executors);
+                instance = new DataRepository(newsDao,networkDataSource, executors);
                 Log.d(TAG, "getInstance: New repository made");
             }
         }
@@ -75,7 +75,8 @@ public class DataRepository {
         Log.d(TAG, "initializeData? "+(!initialized?"Yes":"No"));
         //if (initialized) return;
         initialized = true;
-        networkDataSource.getUserDetails();
+        networkDataSource.fetchUserDetails();
+        networkDataSource.fetchGames();
     }
 
     // Database operations
@@ -93,6 +94,11 @@ public class DataRepository {
     public LiveData<List<News>>getFavNews(){
         //initializeData();
         return newsDao.getAllFavs();
+    }
+
+    public LiveData<List<News>> getNewsbyGame(String game){
+        //initializeData();
+        return newsDao.getNewsByGame(game);
     }
 
     public void updateFavorite(String newid, boolean fav){

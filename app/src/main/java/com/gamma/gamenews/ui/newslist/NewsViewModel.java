@@ -28,9 +28,13 @@ public class NewsViewModel extends ViewModel {
         return newsArrayList;
     }
 
+    public LiveData<List<News>> getNewsByGame(String game) {
+        newsArrayList = dataRepository.getNewsbyGame(game);
+        return newsArrayList;
+    }
+
     public void refreshNews(){
         newsArrayList = dataRepository.getNews();
     }
 
-    public void refreshFavsNews() { newsArrayList = dataRepository.getFavNews(); }
 }

@@ -16,16 +16,14 @@ public class Player {
     private String name;
     private String biografia;
     private String avatar;
-    private String coverImage;
     private String game;
 
     public Player(@NonNull String id, String name, String biografia,
-                  String avatar, String coverImage, String game) {
+                  String avatar, String game) {
         this.id = id;
         this.name = name;
         this.biografia = biografia;
         this.avatar = avatar;
-        this.coverImage = coverImage;
         this.game = game;
     }
 
@@ -44,10 +42,6 @@ public class Player {
 
     public String getAvatar() {
         return avatar;
-    }
-
-    public String getCoverImage() {
-        return coverImage;
     }
 
     public String getGame() {
