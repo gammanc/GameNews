@@ -40,7 +40,6 @@ public class DataRepository {
                     newsDao.deleteAll();
                     Log.d(TAG, "DataRepository: Inserting into database");
                     newsDao.insertNews(news);
-
                 })
         );
 
@@ -73,10 +72,8 @@ public class DataRepository {
      * */
     private synchronized void initializeData(){
         Log.d(TAG, "initializeData? "+(!initialized?"Yes":"No"));
-        //if (initialized) return;
         initialized = true;
         networkDataSource.fetchUserDetails();
-        networkDataSource.fetchGames();
     }
 
     // Database operations

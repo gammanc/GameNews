@@ -19,4 +19,7 @@ public interface PlayerDao {
 
     @Query("SELECT * FROM player WHERE id = :id")
     LiveData<Player> getPlayerInfo(String id);
+
+    @Query("DELETE FROM player")
+    void deleteAll();
 }

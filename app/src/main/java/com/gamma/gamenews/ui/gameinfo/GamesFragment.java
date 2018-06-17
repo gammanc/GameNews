@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.gamma.gamenews.R;
 import com.gamma.gamenews.ui.newslist.NewsFragment;
+import com.gamma.gamenews.ui.player.PlayerListFragment;
 
 public class GamesFragment extends Fragment {
 
@@ -24,7 +25,7 @@ public class GamesFragment extends Fragment {
     private ViewPagerAdapter adapter;
 
     private NewsFragment newsFragment;
-    private NewsFragment newsFragment1;
+    private PlayerListFragment playerListFragment;
     private FragmentManager fragmentManager;
 
     @Override
@@ -50,7 +51,11 @@ public class GamesFragment extends Fragment {
         bundle.putString("game", game);
         newsFragment.setArguments(bundle);
 
+        playerListFragment = new PlayerListFragment();
+        playerListFragment.setArguments(bundle);
+
         adapter.addFragment(newsFragment,"News");
+        adapter.addFragment(playerListFragment, "Players");
 
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);

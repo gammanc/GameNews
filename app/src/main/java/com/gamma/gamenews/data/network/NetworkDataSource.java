@@ -21,6 +21,7 @@ import com.firebase.jobdispatcher.Trigger;
 import com.gamma.gamenews.AppExecutors;
 import com.gamma.gamenews.R;
 import com.gamma.gamenews.data.database.News;
+import com.gamma.gamenews.data.database.Player;
 import com.gamma.gamenews.data.network.deserializer.MessageDeserializer;
 import com.gamma.gamenews.data.network.deserializer.User;
 import com.gamma.gamenews.data.network.deserializer.UserDeserializer;
@@ -53,14 +54,14 @@ public class NetworkDataSource {
     private final MutableLiveData<ArrayList<News>> newsArray;
     private final MutableLiveData<String[]> favorites;
 
-    private final MutableLiveData<String[]> games;
+    private final MutableLiveData<ArrayList<Player>> players;
 
     private NetworkDataSource(Context context, AppExecutors executors) {
         this.context = context;
         this.executors = executors;
         newsArray = new MutableLiveData<>();
         favorites = new MutableLiveData<>();
-        games = new MutableLiveData<>();
+        players = new MutableLiveData<>();
     }
 
     /**
@@ -80,11 +81,14 @@ public class NetworkDataSource {
         return newsArray;
     }
 
+    public LiveData<ArrayList<Player>> getPlayers(){
+        return players;
+    }
+
     public LiveData<String[]> getCurrentFavs(){
         return favorites;
     }
 
-    public LiveData<String[]> getGames(){ return games;}
 
     /**
      * Starts an intent service to fetch the news.
@@ -161,25 +165,21 @@ public class NetworkDataSource {
         });
     }
 
-    //TODO: FETCH GAMES LIST
-    public void fetchGames(){
-        Log.d(TAG, "fetchUserDetails: fetching games...");
+    public void fetchPlayers(){
+        Log.d(TAG, "fetchUserDetails: fetching players...");
         if (checkConnection()) return;
         executors.networkIO().execute(()->{
-            Call<String[]> call = NetworkUtils.getClientInstanceAuth().getGames();
-            call.enqueue(new Callback<String[]>() {
+            Call<ArrayList<Player>> call = NetworkUtils.getClientInstanceAuth().getPlayers();
+            call.enqueue(new Callback<ArrayList<Player>>() {
                 @Override
-                public void onResponse(@NonNull Call<String[]> call,
-                                       @NonNull Response<String[]> response) {
+                public void onResponse(Call<ArrayList<Player>> call, Response<ArrayList<Player>> response) {
                     if (response.isSuccessful()){
-                        games.postValue(response.body());
-                        Log.d(TAG, "onResponse: Games fetching successful!");
+                        players.postValue(response.body());
                     }
                 }
 
                 @Override
-                public void onFailure(@NonNull Call<String[]> call,
-                                      @NonNull Throwable t) {
+                public void onFailure(Call<ArrayList<Player>> call, Throwable t) {
                     showError(t);
                 }
             });

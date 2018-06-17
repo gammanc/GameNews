@@ -29,7 +29,7 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerView
     @NonNull
     @Override
     public PlayerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_news,parent,false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.playeritem,parent,false);
         return (new PlayerViewHolder(v));
     }
 
@@ -43,8 +43,8 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerView
 
         if(player.getAvatar() != null){
             Picasso.get().load(player.getAvatar())
-                    .error(R.drawable.ic_player)
-                    .placeholder(R.drawable.ic_player)
+                    .error(R.drawable.player)
+                    .placeholder(R.drawable.player)
                     .into(holder.imgPlayer);
         } else
             holder.imgPlayer.setImageResource(R.drawable.no_image);
